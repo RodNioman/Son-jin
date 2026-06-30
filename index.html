@@ -91,25 +91,49 @@
     }
     .stat-table td {
       padding: 6px 0;
-      border-bottom: 1px solid #141c2a;
       vertical-align: middle;
-    }
-    .stat-table tr:last-child td {
       border-bottom: none;
     }
-    /* ── Названия характеристик: золотые и крупнее ── */
     .stat-table .stat-name {
-      color: #d4af37;           /* золотистый */
-      font-size: 1.25em;        /* в 1.25 раза больше */
+      color: #d4af37;
+      font-size: 1.25em;
       font-weight: 600;
       min-width: 100px;
     }
-    /* ── Значения характеристик: белые, без изменений ── */
     .stat-table .stat-value {
       text-align: right;
       font-weight: 700;
       color: #ffffff;
       min-width: 40px;
+    }
+    /* ── Строка прогресс-бара ── */
+    .stat-table .stat-bar-row td {
+      padding-top: 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #141c2a;
+    }
+    .stat-table tr:last-child .stat-bar-row td {
+      border-bottom: none;
+    }
+    .stat-bar-wrap {
+      background: #1a2332;
+      border-radius: 4px;
+      height: 6px;
+      overflow: hidden;
+      margin-bottom: 2px;
+    }
+    .stat-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #1f6bb0, #4a9eff);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+    .stat-exp {
+      font-size: 11px;
+      color: #4a6a8a;
+      display: flex;
+      justify-content: space-between;
     }
 
     /* ── Карточки квестов ── */
@@ -257,9 +281,9 @@
       flex-wrap: wrap;
     }
 
-    /* ── Модальное окно приветствия ── */
+    /* ── Оверлей сообщений ── */
     .welcome-overlay {
-      display: flex;  /* по умолчанию скрыто, но мы покажем через JS */
+      display: flex;
       position: fixed;
       top: 0;
       left: 0;
@@ -279,7 +303,7 @@
       border: 2px solid #2a4a6a;
       border-radius: 8px;
       padding: 28px 32px;
-      max-width: 420px;
+      max-width: 480px;
       width: 90%;
       text-align: center;
       box-shadow: 0 0 40px rgba(80, 180, 255, 0.2), inset 0 0 12px 2px rgba(80, 180, 255, 0.10);
@@ -292,11 +316,12 @@
       font-size: 24px;
       margin-bottom: 8px;
     }
-    .welcome-box p {
+    .welcome-box .message {
       color: #b3d9ff;
-      font-size: 16px;
-      margin: 12px 0;
-      line-height: 1.5;
+      font-size: 18px;
+      margin: 16px 0;
+      line-height: 1.6;
+      font-style: italic;
     }
     .welcome-box .highlight {
       color: #d4af37;
@@ -331,22 +356,20 @@
       .welcome-box {
         padding: 20px;
       }
+      .welcome-box .message {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
 <body>
 
-<!-- ОВЕРЛЕЙ ПРИВЕТСТВИЯ -->
-<div class="welcome-overlay" id="welcomeOverlay">
+<!-- ОВЕРЛЕЙ СООБЩЕНИЙ -->
+<div class="welcome-overlay hidden" id="welcomeOverlay">
   <div class="welcome-box">
-    <h2>⚔️ ДОБРО ПОЖАЛОВАТЬ</h2>
-    <p>
-      Охотник, ты пробудился.<br>
-      Твой путь начинается сегодня.
-    </p>
-    <p>
-      Дней в системе: <span class="highlight" id="welcomeDays">1</span>
-    </p>
+    <h2 id="welcomeTitle">⚔️ ДОБРО ПОЖАЛОВАТЬ</h2>
+    <div class="message" id="welcomeMessage">Охотник, ты пробудился.<br>Твой путь начинается сегодня.</div>
+    <p>Дней в системе: <span class="highlight" id="welcomeDays">1</span></p>
     <button class="btn-accept" id="welcomeAccept">ПРИНЯТЬ</button>
   </div>
 </div>
@@ -362,7 +385,7 @@
     </div>
   </div>
 
-  <!-- Таблица характеристик в рамке -->
+  <!-- Таблица характеристик с прогресс-барами -->
   <div class="stat-card">
     <table class="stat-table">
       <thead>
@@ -500,7 +523,6 @@
     const avg = avgAllMain(data);
     const rank = getRank(avg);
 
-    // Уровень теперь вычисляется динамически
     document.getElementById('levelDisplay').textContent = Math.round(avg);
     document.getElementById('expDisplay').textContent = Math.round(s.STR.exp + s.AGI.exp + s.VIT.exp + s.INT.exp + s.CHA.exp);
 
@@ -536,12 +558,29 @@
     tbody.innerHTML = '';
     rows.forEach(row => {
       const st = stats[row.key];
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
+      const need = expToNext(st.level);
+      const progress = Math.min(100, (st.exp / need) * 100);
+      const tr1 = document.createElement('tr');
+      tr1.innerHTML = `
         <td class="stat-name">${row.label}</td>
         <td class="stat-value">${st.level}</td>
       `;
-      tbody.appendChild(tr);
+      tbody.appendChild(tr1);
+
+      const tr2 = document.createElement('tr');
+      tr2.className = 'stat-bar-row';
+      tr2.innerHTML = `
+        <td colspan="2">
+          <div class="stat-bar-wrap">
+            <div class="stat-bar" style="width: ${progress}%;"></div>
+          </div>
+          <div class="stat-exp">
+            <span>EXP: ${Math.round(st.exp)} / ${need}</span>
+            <span>${Math.round(progress)}%</span>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr2);
     });
   }
 
@@ -667,6 +706,60 @@
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  ЕЖЕДНЕВНЫЕ СООБЩЕНИЯ (первые 7 дней)
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  const dailyMessages = {
+    1: {
+      title: '⚔️ ДОБРО ПОЖАЛОВАТЬ',
+      text: 'Охотник, ты пробудился.<br>Твой путь начинается сегодня.'
+    },
+    2: {
+      title: '📜 МУДРОСТЬ ДНЯ',
+      text: '«Если я сдамся из-за того, что испугался, то не смогу стать сильнее.»'
+    },
+    3: {
+      title: '📜 МУДРОСТЬ ДНЯ',
+      text: '«Если боль не убьет меня, она лишь сделает меня сильнее.»'
+    },
+    4: {
+      title: '📜 МУДРОСТЬ ДНЯ',
+      text: '«Когда ты смотришь в бездну, бездна смотрит на тебя.»'
+    },
+    5: {
+      title: '📜 МУДРОСТЬ ДНЯ',
+      text: '«Приходит осень, приходит зима, а следом весна. Во всем есть начало и конец, и за концом всегда следует новое начало.»'
+    },
+    6: {
+      title: '📜 МУДРОСТЬ ДНЯ',
+      text: '«Система хочет, чтобы я жил.»'
+    },
+    7: {
+      title: '📜 МУДРОСТЬ ДНЯ',
+      text: '«Система использует меня, а я использую систему.»'
+    }
+  };
+
+  function showDailyMessage(day) {
+    if (day >= 1 && day <= 7) {
+      const key = 'dailyMsg_' + day;
+      if (!sessionStorage.getItem(key)) {
+        const msg = dailyMessages[day];
+        if (msg) {
+          document.getElementById('welcomeTitle').textContent = msg.title;
+          document.getElementById('welcomeMessage').innerHTML = msg.text;
+          document.getElementById('welcomeDays').textContent = day;
+          document.getElementById('welcomeOverlay').classList.remove('hidden');
+          sessionStorage.setItem(key, 'shown');
+        }
+      }
+    }
+  }
+
+  function hideWelcome() {
+    document.getElementById('welcomeOverlay').classList.add('hidden');
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   //  НОВЫЙ ДЕНЬ
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function newDay() {
@@ -789,28 +882,16 @@
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  ПРИВЕТСТВИЕ
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  function showWelcome() {
-    const data = loadData();
-    document.getElementById('welcomeDays').textContent = data.day;
-    document.getElementById('welcomeOverlay').classList.remove('hidden');
-  }
-
-  function hideWelcome() {
-    document.getElementById('welcomeOverlay').classList.add('hidden');
-    // сохраняем состояние, чтобы больше не показывать в этой сессии
-    sessionStorage.setItem('welcomeShown', 'true');
-  }
-
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   //  ПОЛНЫЙ СБРОС
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function resetFull() {
     if (confirm('Сбросить весь прогресс?')) {
       soundClick();
       localStorage.removeItem('hunterSystemData');
-      sessionStorage.removeItem('welcomeShown');
+      // очищаем sessionStorage для сообщений
+      for (let i = 1; i <= 7; i++) {
+        sessionStorage.removeItem('dailyMsg_' + i);
+      }
       location.reload();
     }
   }
@@ -821,12 +902,10 @@
   let appData = loadData();
   renderAll(appData);
 
-  // Показываем приветствие, если ещё не показывали в этой сессии
-  if (!sessionStorage.getItem('welcomeShown')) {
-    showWelcome();
-  }
+  // Показываем сообщение для текущего дня (если день 1-7)
+  showDailyMessage(appData.day);
 
-  // Кнопка "Принять" в приветствии
+  // Кнопка "Принять" в оверлее
   document.getElementById('welcomeAccept').addEventListener('click', hideWelcome);
 
   // Основные кнопки
