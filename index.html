@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Система Охотника — Solo Leveling</title>
+  <style>
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       ГЛОБАЛЬНЫЙ СТИЛЬ + ТЁМНАЯ АНИМАЦИЯ
+       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    @keyframes pulse-border {
+      0% { border-color: #1a2a3a; }
+      50% { border-color: #3a7aaa; }
+      100% { border-color: #1a2a3a; }
+    }
+
+    @keyframes glow {
+      0% { box-shadow: 0 0 8px rgba(74, 158, 255, 0.1); }
+      50% { box-shadow: 0 0 25px rgba(74, 158, 255, 0.25); }
+      100% { box-shadow: 0 0 8px rgba(74, 158, 255, 0.1); }
+    }
+
+    @keyframes stat-fill {
+      from { width: 0%; }
+      to { width: var(--fill); }
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      background: #0b0d15;
+      color: #c8d0e0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 840px;
+      width: 100%;
+      background: #12161f;
+      border: 1px solid #1a2a3a;
+      border-radius: 24px;
+      padding: 24px 20px 32px;
+      animation: glow 3s infinite ease-in-out;
+      position: relative;
+      transition: border-color 0.3s;
+    }
+
+    h1 {
+      font-size: 26px;
+      border-bottom: 1px solid #1e2a3a;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #b3d9ff;
+      letter-spacing: 0.5px;
+    }
+    h1 small {
+      font-size: 14px;
+      font-weight: 300;
+      color: #6a7e9e;
+    }
+    h2 {
+      font-size: 18px;
+      font-weight: 400;
+      margin: 26px 0 12px;
+      color: #7a9ec8;
+    }
+
+    /* ── Строка статуса ── */
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 24px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      color: #6a8aaa;
+    }
+    .status-row span strong {
+      color: #b3d9ff;
+    }
+
+    /* ── Блоки характеристик ── */
+    .stat-block {
+      background: #0e131e;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border-left: 3px solid #2a4a6a;
+      transition: 0.3s;
+      cursor: default;
+    }
+    .stat-block:hover {
+      border-left-color: #4a9eff;
+      background: #111a28;
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .stat-header .label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stat-header .value {
+      color: #b3d9ff;
+    }
+
+    .stat-bar-wrap {
+      margin-top: 6px;
+      background: #1a2332;
+      border-radius: 20px;
+      height: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .stat-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #1f6bb0, #4a9eff);
+      border-radius: 20px;
+      transition: width 0.6s ease;
+      animation: stat-fill 0.8s ease forwards;
+    }
+
+    .stat-exp {
+      font-size: 12px;
+      color: #6a7e9e;
+      margin-top: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* ── Сетка квестов ── */
+    .row-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    @media (max-width: 600px) {
+      .row-2col {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+
+    .card {
+      background: #0e131e;
+      border-radius: 16px;
+      padding: 16px 14px;
+      border: 1px solid #1a2332;
+      transition: 0.3s;
+    }
+    .card:hover {
+      border-color: #2a4a6a;
+    }
+    .card h3 {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #7a9ec8;
+      letter-spacing: 0.3px;
+    }
+
+    .quest-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      padding: 4px 0;
+      border-bottom: 1px solid #141c2a;
+      transition: 0.2s;
+    }
+    .quest-item:last-child {
+      border-bottom: none;
+    }
+    .quest-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #4a9eff;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .quest-item.done {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    /* ── Бейджи ── */
+    .badge {
+      background: #1a2a3e;
+      color: #7a9ec8;
+      padding: 2px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      display: inline-block;
+      transition: 0.3s;
+    }
+    .badge.active {
+      background: #1a3a5a;
+      color: #7ac0ff;
+      border: 1px solid #4a9eff;
+    }
+
+    /* ── Кнопки ── */
+    .btn {
+      background: #1a2a3e;
+      border: 1px solid #2a4a6a;
+      color: #b3d9ff;
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.25s;
+      width: 100%;
+      margin-top: 8px;
+    }
+    .btn:hover {
+      background: #1f3a5a;
+      border-color: #4a9eff;
+      box-shadow: 0 0 20px rgba(74, 158, 255, 0.15);
+    }
+    .btn:active {
+      transform: scale(0.96);
+    }
+    .btn-reset {
+      background: #1a1a2a;
+      border-color: #2a2a3a;
+    }
+    .btn-reset:hover {
+      background: #2a1a2a;
+      border-color: #6a3a4a;
+    }
+
+    /* ── Бонусы ── */
+    .bonus-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 16px 0 8px;
+    }
+
+    /* ── Ачивки ── */
+    .achievement {
+      background: #0e131e;
+      border-radius: 12px;
+      padding: 8px 14px;
+      margin: 4px 0;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      border-left: 2px solid #1f3a5a;
+      transition: 0.25s;
+      position: relative;
+      cursor: default;
+    }
+    .achievement.locked {
+      opacity: 0.35;
+      border-left-color: #2a2a3a;
+    }
+    .achievement.locked:hover {
+      opacity: 0.7;
+      background: #111a28;
+    }
+    .achievement .ach-name {
+      font-weight: 400;
+    }
+    .achievement .ach-bonus {
+      color: #7a9ec8;
+      font-size: 12px;
+    }
+
+    /* ── Всплывающая подсказка (тултип) для ачивок ── */
+    .ach-tooltip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 0;
+      background: #0e131e;
+      border: 1px solid #2a4a6a;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #b3d9ff;
+      width: 260px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+      z-index: 100;
+      pointer-events: none;
+      transition: 0.2s;
+    }
+    .achievement.locked:hover .ach-tooltip {
+      display: block;
+    }
+    .ach-tooltip .condition {
+      color: #7a9ec8;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    /* ── Футер ── */
+    .footer-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #4a5a6a;
+      margin-top: 20px;
+      border-top: 1px solid #141c2a;
+      padding-top: 16px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    /* ── Анимация уровня (вспышка) ── */
+    @keyframes levelUpFlash {
+      0% { background: #0e131e; }
+      30% { background: #1a3a5a; box-shadow: 0 0 40px rgba(74, 158, 255, 0.3); }
+      70% { background: #0e131e; }
+      100% { background: #0e131e; }
+    }
+    .stat-block.level-up {
+      animation: levelUpFlash 0.8s ease;
+    }
+
+    /* ── Анимация открытия ачивки ── */
+    @keyframes achUnlock {
+      0% { background: #0e131e; transform: scale(1); }
+      30% { background: #1a3a2a; border-color: #4aff8a; transform: scale(1.02); }
+      70% { background: #0e131e; transform: scale(1); }
+      100% { background: #0e131e; }
+    }
+    .achievement.just-unlocked {
+      animation: achUnlock 0.9s ease;
+      border-color: #4aff8a !important;
+    }
+  </style>
+</head>
+<body>
+<div class="container" id="app">
+
+  <h1>
+    <span>⚔️ СИСТЕМА ОХОТНИКА</span>
+    <small>v2.0</small>
+  </h1>
+
+  <!-- Строка статуса -->
+  <div class="status-row">
+    <span>📅 День: <strong id="dayCounter">1</strong></span>
+    <span>🔥 Стрик: <strong id="streakDisplay">0</strong> дн.</span>
+    <span>🏅 Ранг квеста: <strong id="rankDisplay">E</strong></span>
+    <span>📦 Очков стат: <strong id="freePoints">0</strong></span>
+  </div>
+
+  <!-- Характеристики -->
+  <div id="statsContainer"></div>
+
+  <!-- Квесты -->
+  <div class="row-2col">
+    <div class="card" id="questPhysical">
+      <h3>💪 ФИЗИЧЕСКИЙ КВЕСТ</h3>
+      <div id="physQuestList"></div>
+    </div>
+    <div class="card" id="questMental">
+      <h3>🧠 МЕНТАЛЬНЫЙ КВЕСТ</h3>
+      <div id="mentQuestList"></div>
+    </div>
+  </div>
+  <div class="card" id="questSocial" style="margin-top:0;">
+    <h3>🗣 СОЦИАЛЬНЫЙ КВЕСТ</h3>
+    <div id="socQuestList"></div>
+  </div>
+
+  <!-- Бонусы -->
+  <div class="bonus-row">
+    <span class="badge" id="bonusTri">🌟 Триединство: нет</span>
+    <span class="badge" id="bonusStreak">🔥 Стрик 7+: нет</span>
+  </div>
+
+  <!-- Кнопки -->
+  <button class="btn" id="btnNewDay">🔄 НОВЫЙ ДЕНЬ</button>
+  <button class="btn btn-reset" id="btnReset" style="margin-top:6px;">🔄 Сбросить прогресс</button>
+
+  <!-- Ачивки -->
+  <h2>🏆 АЧИВКИ</h2>
+  <div id="achievementList"></div>
+
+  <div class="footer-info">
+    <span>💾 Сохраняется автоматически</span>
+    <span>⏱️ Последнее обновление: <span id="lastSave">—</span></span>
+  </div>
+</div>
+
+<script>
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  1. ЗВУКИ (Web Audio — без внешних файлов)
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  let audioCtx = null;
+
+  function initAudio() {
+    if (!audioCtx) {
+      audioCtx = new AudioCtx();
+    }
+  }
+
+  function playTone(freq, duration, type = 'sine', volume = 0.15) {
+    try {
+      initAudio();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.value = freq;
+      gain.gain.value = volume;
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch (e) { /* тихо падаем */ }
+  }
+
+  function soundLevelUp() {
+    playTone(523, 0.1, 'sine', 0.12); // C5
+    setTimeout(() => playTone(659, 0.1, 'sine', 0.12), 100); // E5
+    setTimeout(() => playTone(784, 0.15, 'sine', 0.14), 200); // G5
+  }
+
+  function soundAchievement() {
+    playTone(880, 0.1, 'sine', 0.13);
+    setTimeout(() => playTone(1109, 0.1, 'sine', 0.13), 120);
+    setTimeout(() => playTone(1319, 0.2, 'sine', 0.15), 240);
+  }
+
+  function soundClick() {
+    playTone(440, 0.05, 'sine', 0.06);
+  }
+
+  function soundNewDay() {
+    playTone(330, 0.08, 'sine', 0.08);
+    setTimeout(() => playTone(440, 0.08, 'sine', 0.08), 100);
+    setTimeout(() => playTone(554, 0.12, 'sine', 0.10), 200);
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  2. ДАННЫЕ ПО УМОЛЧАНИЮ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  const DEFAULT = {
+    day: 1,
+    streak: 0,
+    freePoints: 0,
+    stats: {
+      STR: { level: 10, exp: 0 },
+      AGI: { level: 10, exp: 0 },
+      VIT: { level: 10, exp: 0 },
+      INT: { level: 10, exp: 0 },
+      CHA: { level: 10, exp: 0 },
+      PER: { level: 10, exp: 0 }
+    },
+    quests: {
+      phys: [false, false, false, false, false],
+      ment: [false, false, false, false, false],
+      soc: [false, false, false, false, false]
+    },
+    unlockedAchievements: [],
+    dayStarted: false,
+    // для отслеживания только что открытых ачивок
+    justUnlocked: []
+  };
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  3. ЗАГРУЗКА / СОХРАНЕНИЕ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function loadData() {
+    try {
+      const raw = localStorage.getItem('hunterSystemData');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        for (let key in DEFAULT) {
+          if (!(key in parsed)) parsed[key] = DEFAULT[key];
+        }
+        return parsed;
+      }
+    } catch (e) { /* ignore */ }
+    return JSON.parse(JSON.stringify(DEFAULT));
+  }
+
+  function saveData(data) {
+    localStorage.setItem('hunterSystemData', JSON.stringify(data));
+    document.getElementById('lastSave').textContent = new Date().toLocaleTimeString();
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  4. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function expToNext(level) {
+    return Math.round(100 * (1 + (level - 1) * 0.08));
+  }
+
+  function avgAllMain(data) {
+    const s = data.stats;
+    return (s.STR.level + s.AGI.level + s.VIT.level + s.INT.level + s.CHA.level) / 5;
+  }
+
+  function getRank(avg) {
+    if (avg < 16) return 'E';
+    if (avg < 26) return 'D';
+    if (avg < 41) return 'C';
+    if (avg < 61) return 'B';
+    return 'A';
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  5. СПИСОК АЧИВОК С УСЛОВИЯМИ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function getAchievementsList() {
+    return [
+      { name: 'Первый шаг', bonus: '+5 EXP ко всем', condition: 'Выполнить любой квест 1 раз' },
+      { name: 'Новичок', bonus: '+10 EXP к STR', condition: 'Выполнить 7 физических квестов' },
+      { name: 'Стальные сухожилия', bonus: '+15 EXP к VIT', condition: 'STR ≥ 25' },
+      { name: 'Быстрее ветра', bonus: '+15 EXP к AGI', condition: 'AGI ≥ 25' },
+      { name: 'Железное сердце', bonus: '+20 EXP к VIT', condition: 'VIT ≥ 30' },
+      { name: 'Тридцатник', bonus: '+1 очко стат', condition: 'STR, AGI, VIT ≥ 30' },
+      { name: '50 отжиманий за раз', bonus: '+20 EXP к STR', condition: 'Выполнить 50 отжиманий' },
+      { name: 'Бегун', bonus: '+20 EXP к VIT', condition: 'Пробежать 5 км без остановки' },
+      { name: 'Машина', bonus: '+30 EXP ко всем', condition: 'Выполнять квесты 30 дней подряд' },
+      { name: 'Элитный охотник', bonus: '+3 очка стат', condition: 'STR, AGI, VIT ≥ 50' },
+      { name: 'Книжный червь', bonus: '+15 EXP к INT', condition: 'Прочитать 5 книг (нон-фикшн)' },
+      { name: 'Логик', bonus: '+15 EXP к INT', condition: 'Решить 100 логических задач' },
+      { name: 'Полиглот', bonus: '+20 EXP к INT', condition: 'Выучить 200 новых слов' },
+      { name: 'Медитация', bonus: '+10 EXP к PER', condition: '50 сессий медитации' },
+      { name: 'Интеллектуал', bonus: '+20 EXP к INT', condition: 'INT ≥ 30' },
+      { name: 'Мыслитель', bonus: '+30 EXP к INT + 1 очко', condition: 'INT ≥ 50' },
+      { name: 'Критик', bonus: '+20 EXP к INT', condition: 'Написать 10 эссе/конспектов' },
+      { name: 'Скорость мысли', bonus: '+15 EXP к PER', condition: '30 задач на время' },
+      { name: 'Контакт', bonus: '+10 EXP к CHA', condition: 'Сделать 10 комплиментов' },
+      { name: 'Оратор', bonus: '+15 EXP к CHA', condition: 'Выступить с речью 10 раз' },
+      { name: 'Эмпат', bonus: '+15 EXP к CHA', condition: 'Вести дневник эмоций 30 дней' },
+      { name: 'Харизматик', bonus: '+20 EXP к CHA', condition: 'CHA ≥ 30' },
+      { name: 'Лидер', bonus: '+30 EXP к CHA + 1 очко', condition: 'CHA ≥ 50' },
+      { name: 'Слушатель', bonus: '+15 EXP к PER', condition: '30 сессий активного слушания' },
+      { name: 'Нетворкер', bonus: '+20 EXP к CHA', condition: 'Завести 5 новых знакомств' },
+      { name: 'Серебряный охотник', bonus: '+2 очка стат', condition: 'Все статы ≥ 30' },
+      { name: 'Золотой охотник', bonus: '+3 очка стат', condition: 'Все статы ≥ 40' },
+      { name: 'Платиновый охотник', bonus: '+5 очков стат', condition: 'Все статы ≥ 50' },
+      { name: 'Легенда', bonus: '+50 EXP ко всем', condition: 'Выполнить 365 квестов (год)' },
+      { name: 'Пробуждение', bonus: '+1 очко + титул', condition: 'Любая стата ≥ 70' }
+    ];
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  6. РЕНДЕРИНГ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function renderAll(data) {
+    const s = data.stats;
+    const avg = avgAllMain(data);
+    const rank = getRank(avg);
+
+    // Счётчики
+    document.getElementById('dayCounter').textContent = data.day;
+    document.getElementById('streakDisplay').textContent = data.streak;
+    document.getElementById('rankDisplay').textContent = rank;
+    document.getElementById('freePoints').textContent = data.freePoints;
+
+    // ── Статы ──
+    const statNames = ['STR', 'AGI', 'VIT', 'INT', 'CHA', 'PER'];
+    const statLabels = {
+      STR: '💪 Сила',
+      AGI: '🏃 Ловкость',
+      VIT: '❤️ Живучесть',
+      INT: '🧠 Интеллект',
+      CHA: '🗣 Харизма',
+      PER: '👁 Восприятие'
+    };
+    const container = document.getElementById('statsContainer');
+    container.innerHTML = '';
+    statNames.forEach(key => {
+      const st = s[key];
+      const need = expToNext(st.level);
+      const progress = Math.min(100, (st.exp / need) * 100);
+      const div = document.createElement('div');
+      div.className = 'stat-block';
+      div.id = 'stat-' + key;
+      div.innerHTML = `
+        <div class="stat-header">
+          <span class="label">${statLabels[key]}</span>
+          <span class="value">${st.level} <span style="font-size:12px;color:#4a6a8a;">/ 100</span></span>
+        </div>
+        <div class="stat-bar-wrap">
+          <div class="stat-bar" style="--fill: ${progress}%; width: ${progress}%;"></div>
+        </div>
+        <div class="stat-exp">
+          <span>EXP: ${Math.round(st.exp)} / ${need}</span>
+          <span>${Math.round(progress)}%</span>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+
+    // ── Квесты ──
+    renderQuest('phys', data.quests.phys, getQuestList('phys', rank));
+    renderQuest('ment', data.quests.ment, getQuestList('ment', rank));
+    renderQuest('soc', data.quests.soc, getQuestList('soc', rank));
+
+    // ── Бонусы ──
+    const allDone = data.quests.phys.every(v=>v) && data.quests.ment.every(v=>v) && data.quests.soc.every(v=>v);
+    const triEl = document.getElementById('bonusTri');
+    triEl.textContent = allDone ? '🌟 Триединство: АКТИВНО' : '🌟 Триединство: нет';
+    triEl.className = 'badge' + (allDone ? ' active' : '');
+
+    const streakEl = document.getElementById('bonusStreak');
+    const hasStreak = data.streak >= 7;
+    streakEl.textContent = hasStreak ? '🔥 Стрик 7+: АКТИВНО' : '🔥 Стрик 7+: нет';
+    streakEl.className = 'badge' + (hasStreak ? ' active' : '');
+
+    // ── Ачивки ──
+    renderAchievements(data);
+
+    // Сохраняем
+    saveData(data);
+  }
+
+  // ── Рендер одного квеста ──
+  function renderQuest(type, checks, items) {
+    const containerId = type === 'phys' ? 'physQuestList' : (type === 'ment' ? 'mentQuestList' : 'socQuestList');
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    items.forEach((text, idx) => {
+      const checked = checks[idx] || false;
+      const div = document.createElement('div');
+      div.className = 'quest-item' + (checked ? ' done' : '');
+      div.innerHTML = `
+        <input type="checkbox" ${checked ? 'checked' : ''} data-type="${type}" data-idx="${idx}">
+        <span>${text}</span>
+      `;
+      container.appendChild(div);
+    });
+    container.querySelectorAll('input[type="checkbox"]').forEach(inp => {
+      inp.addEventListener('change', function() {
+        soundClick();
+        const type = this.dataset.type;
+        const idx = parseInt(this.dataset.idx);
+        const data = loadData();
+        data.quests[type][idx] = this.checked;
+        if (!data.dayStarted) data.dayStarted = true;
+        saveData(data);
+        renderAll(data);
+      });
+    });
+  }
+
+  // ── Список квестов по рангу ──
+  function getQuestList(type, rank) {
+    const ranks = ['E','D','C','B','A'];
+    const idx = Math.min(ranks.indexOf(rank), 4);
+    const r = idx >= 0 ? idx : 0;
+
+    const phys = [
+      ['Отжимания с колен — 3×12', 'Отжимания — 3×15', 'Отжимания с рюкз. 5кг — 3×20', 'Отжимания с рюкз. 10кг — 3×25', 'Отжимания с рюкз. 15кг — 3×30'],
+      ['Приседания без веса — 3×20', 'Приседания с рюкз. 5кг — 3×25', 'Приседания с рюкз. 10кг — 3×30', 'Приседания с рюкз. 15кг — 3×35', 'Приседания с рюкз. 20кг — 3×40'],
+      ['Планка на руках — 3×25с', 'Планка на локтях — 3×35с', 'Планка с 5кг — 3×45с', 'Планка с 10кг — 3×60с', 'Планка с 15кг — 3×75с'],
+      ['Выпады — 3×10', 'Выпады с 5кг — 3×12', 'Бёрпи — 3×10', 'Бёрпи с отжим. — 3×15', 'Бёрпи с прыжком — 3×20'],
+      ['Ходьба 30 мин', 'Ходьба 40 мин', 'Бег 3 км', 'Бег 5 км', 'Бег 7 км (интервалы)']
+    ];
+    const ment = [
+      ['Чтение 20 мин', 'Чтение 30 мин + анализ', 'Чтение 40 мин + разбор', 'Чтение 60 мин + выводы', 'Чтение 90 мин + критика'],
+      ['Логика 15 мин', 'Шахматы/задачи 20 мин', 'Дебаты (письм.) 15 мин', 'Статья 500 зн.', 'Эссе 1000 зн.'],
+      ['5 слов', '10 слов + диалог', '15 слов', '20 слов', '30 слов'],
+      ['Конспект 5-7 пр.', 'Эссе 1 абзац', 'Видеолекция 20 мин', '3 задачи', 'Новая тема 40 мин'],
+      ['Медитация 5 мин', 'Медитация 10 мин', 'Медитация 15 мин', 'Медитация 20 мин', 'Скорочтение 15 мин']
+    ];
+    const soc = [
+      ['Слушание 5 мин', 'Слушание 10 мин', 'Слушание 15 мин + анализ', 'Слушание 20 мин + разбор', 'Слушание 30 мин + резюме'],
+      ['Речь 2 мин', 'Речь 3 мин (запись)', 'Речь 5 мин (камера)', 'Речь 7 мин + аргум.', 'Речь 10 мин + импров.'],
+      ['1 комплимент', '2 комплимента', '3 комплимента', 'Новый контакт', 'Публичный пост'],
+      ['Дневник 3 пр.', 'Дневник 5 пр.', 'Дневник + идея', 'Дневник + план', 'Дневник + рефлексия'],
+      ['Осанка/улыбка 2 мин', 'Осанка 5 мин', 'Голос 5 мин', 'Эмпатия', 'Наставничество']
+    ];
+
+    let list = [];
+    if (type === 'phys') {
+      for (let i=0; i<5; i++) list.push(phys[i][r] || phys[i][0]);
+    } else if (type === 'ment') {
+      for (let i=0; i<5; i++) list.push(ment[i][r] || ment[i][0]);
+    } else {
+      for (let i=0; i<5; i++) list.push(soc[i][r] || soc[i][0]);
+    }
+    return list;
+  }
+
+  // ── Ачивки с тултипами ──
+  function renderAchievements(data) {
+    const list = getAchievementsList();
+    const unlocked = data.unlockedAchievements || [];
+    const container = document.getElementById('achievementList');
+    container.innerHTML = '';
+
+    list.forEach((ach, idx) => {
+      const isUnlocked = unlocked.includes(idx);
+      const div = document.createElement('div');
+      div.className = 'achievement' + (isUnlocked ? '' : ' locked');
+      if (data.justUnlocked && data.justUnlocked.includes(idx)) {
+        div.classList.add('just-unlocked');
+        setTimeout(() => div.classList.remove('just-unlocked'), 1000);
+      }
+      div.innerHTML = `
+        <span class="ach-name">${isUnlocked ? '✅' : '🔒'} ${ach.name}</span>
+        <span class="ach-bonus">${ach.bonus}</span>
+        <div class="ach-tooltip">
+          <strong>${ach.name}</strong>
+          <div class="condition">📋 Условие: ${ach.condition}</div>
+          <div style="margin-top:4px;color:#6a8aaa;font-size:12px;">🎁 Награда: ${ach.bonus}</div>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  7. НОВЫЙ ДЕНЬ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function newDay() {
+    soundNewDay();
+    let data = loadData();
+
+    const allPhys = data.quests.phys.every(v=>v);
+    const allMent = data.quests.ment.every(v=>v);
+    const allSoc = data.quests.soc.every(v=>v);
+    const tripleBonus = allPhys && allMent && allSoc;
+    const anyComplete = allPhys || allMent || allSoc;
+
+    if (anyComplete) {
+      data.streak += 1;
+    } else {
+      data.streak = 0;
+    }
+
+    const rank = getRank(avgAllMain(data));
+    const bonusMap = { E:15, D:20, C:25, B:30, A:35 };
+    const baseBonus = bonusMap[rank] || 15;
+
+    // Начисляем EXP
+    if (allPhys) {
+      data.stats.STR.exp += baseBonus + (data.streak >= 7 ? 10 : 0);
+      data.stats.AGI.exp += baseBonus + (data.streak >= 7 ? 10 : 0);
+      data.stats.VIT.exp += baseBonus + (data.streak >= 7 ? 10 : 0);
+    }
+    if (allMent) {
+      data.stats.INT.exp += baseBonus + (data.streak >= 7 ? 10 : 0);
+    }
+    if (allSoc) {
+      data.stats.CHA.exp += baseBonus + (data.streak >= 7 ? 10 : 0);
+    }
+    if (tripleBonus) {
+      data.stats.STR.exp += 30;
+      data.stats.AGI.exp += 30;
+      data.stats.VIT.exp += 30;
+      data.stats.INT.exp += 30;
+      data.stats.CHA.exp += 30;
+      data.freePoints += 1;
+    }
+
+    // Повышаем уровни
+    const statKeys = ['STR','AGI','VIT','INT','CHA'];
+    let leveled = false;
+    statKeys.forEach(key => {
+      let st = data.stats[key];
+      while (st.exp >= expToNext(st.level)) {
+        st.exp -= expToNext(st.level);
+        st.level += 1;
+        leveled = true;
+      }
+    });
+    if (leveled) {
+      soundLevelUp();
+      // анимация на стат-блоках
+      setTimeout(() => {
+        statKeys.forEach(key => {
+          const el = document.getElementById('stat-' + key);
+          if (el) {
+            el.classList.add('level-up');
+            setTimeout(() => el.classList.remove('level-up'), 900);
+          }
+        });
+      }, 100);
+    }
+
+    // PER пассивно
+    const intLv = data.stats.INT.level;
+    const chaLv = data.stats.CHA.level;
+    const bonusPer = Math.floor(data.day / 10) * 0.5;
+    const newPer = Math.floor(10 + Math.floor(intLv / 10) + Math.floor(chaLv / 15) + bonusPer);
+    if (newPer > data.stats.PER.level) {
+      data.stats.PER.level = newPer;
+    }
+
+    // Сброс чекбоксов
+    data.quests.phys = [false,false,false,false,false];
+    data.quests.ment = [false,false,false,false,false];
+    data.quests.soc = [false,false,false,false,false];
+    data.dayStarted = false;
+    data.day += 1;
+
+    // Проверка ачивок
+    const newUnlocks = checkAchievements(data);
+    if (newUnlocks.length > 0) {
+      soundAchievement();
+      data.justUnlocked = newUnlocks;
+    } else {
+      data.justUnlocked = [];
+    }
+
+    saveData(data);
+    renderAll(data);
+  }
+
+  // ── Проверка ачивок ──
+  function checkAchievements(data) {
+    const unlocked = data.unlockedAchievements || [];
+    const s = data.stats;
+    const newUnlocks = [];
+    const allMain = s.STR.level >= 30 && s.AGI.level >= 30 && s.VIT.level >= 30 && s.INT.level >= 30 && s.CHA.level >= 30;
+
+    const checks = [
+      { idx: 0, cond: data.day > 1 }, // Первый шаг
+      { idx: 1, cond: data.day >= 7 }, // Новичок (упрощённо)
+      { idx: 2, cond: s.STR.level >= 25 },
+      { idx: 3, cond: s.AGI.level >= 25 },
+      { idx: 4, cond: s.VIT.level >= 30 },
+      { idx: 5, cond: s.STR.level >= 30 && s.AGI.level >= 30 && s.VIT.level >= 30 },
+      { idx: 6, cond: false }, // 50 отжиманий — вручную не отслеживаем
+      { idx: 7, cond: false },
+      { idx: 8, cond: data.day >= 30 },
+      { idx: 9, cond: s.STR.level >= 50 && s.AGI.level >= 50 && s.VIT.level >= 50 },
+      { idx: 10, cond: false },
+      { idx: 11, cond: false },
+      { idx: 12, cond: false },
+      { idx: 13, cond: false },
+      { idx: 14, cond: s.INT.level >= 30 },
+      { idx: 15, cond: s.INT.level >= 50 },
+      { idx: 16, cond: false },
+      { idx: 17, cond: false },
+      { idx: 18, cond: false },
+      { idx: 19, cond: false },
+      { idx: 20, cond: false },
+      { idx: 21, cond: s.CHA.level >= 30 },
+      { idx: 22, cond: s.CHA.level >= 50 },
+      { idx: 23, cond: false },
+      { idx: 24, cond: false },
+      { idx: 25, cond: allMain },
+      { idx: 26, cond: s.STR.level >= 40 && s.AGI.level >= 40 && s.VIT.level >= 40 && s.INT.level >= 40 && s.CHA.level >= 40 },
+      { idx: 27, cond: s.STR.level >= 50 && s.AGI.level >= 50 && s.VIT.level >= 50 && s.INT.level >= 50 && s.CHA.level >= 50 },
+      { idx: 28, cond: data.day >= 365 },
+      { idx: 29, cond: s.STR.level >= 70 || s.AGI.level >= 70 || s.VIT.level >= 70 || s.INT.level >= 70 || s.CHA.level >= 70 }
+    ];
+
+    checks.forEach(c => {
+      if (c.cond && !unlocked.includes(c.idx)) {
+        unlocked.push(c.idx);
+        newUnlocks.push(c.idx);
+      }
+    });
+
+    data.unlockedAchievements = [...new Set(unlocked)];
+    return newUnlocks;
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  8. СБРОС
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function resetProgress() {
+    if (confirm('Сбросить весь прогресс?')) {
+      soundClick();
+      localStorage.removeItem('hunterSystemData');
+      location.reload();
+    }
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  9. СТАРТ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  let appData = loadData();
+  renderAll(appData);
+
+  document.getElementById('btnNewDay').addEventListener('click', newDay);
+  document.getElementById('btnReset').addEventListener('click', resetProgress);
+
+  window.addEventListener('beforeunload', () => {
+    const data = loadData();
+    saveData(data);
+  });
+</script>
+</body>
+</html>
