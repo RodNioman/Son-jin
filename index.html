@@ -3,212 +3,176 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Система Охотника — Solo Leveling</title>
+  <title>Характеристики — Solo Leveling</title>
   <style>
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-       ГЛОБАЛЬНЫЙ СТИЛЬ + ТЁМНАЯ АНИМАЦИЯ
-       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
-    @keyframes pulse-border {
-      0% { border-color: #1a2a3a; }
-      50% { border-color: #3a7aaa; }
-      100% { border-color: #1a2a3a; }
-    }
-
-    @keyframes glow {
-      0% { box-shadow: 0 0 8px rgba(74, 158, 255, 0.1); }
-      50% { box-shadow: 0 0 25px rgba(74, 158, 255, 0.25); }
-      100% { box-shadow: 0 0 8px rgba(74, 158, 255, 0.1); }
-    }
-
-    @keyframes stat-fill {
-      from { width: 0%; }
-      to { width: var(--fill); }
-    }
-
     body {
-      font-family: 'Segoe UI', 'Arial', sans-serif;
-      background: #0b0d15;
+      font-family: 'Courier New', monospace;
+      background: #0a0c12;
       color: #c8d0e0;
-      padding: 20px;
+      padding: 16px;
       min-height: 100vh;
       display: flex;
       justify-content: center;
-    }
-
-    .container {
-      max-width: 840px;
-      width: 100%;
-      background: #12161f;
-      border: 1px solid #1a2a3a;
-      border-radius: 24px;
-      padding: 24px 20px 32px;
-      animation: glow 3s infinite ease-in-out;
-      position: relative;
-      transition: border-color 0.3s;
-    }
-
-    h1 {
-      font-size: 26px;
-      border-bottom: 1px solid #1e2a3a;
-      padding-bottom: 12px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
       align-items: center;
-      color: #b3d9ff;
-      letter-spacing: 0.5px;
     }
-    h1 small {
-      font-size: 14px;
-      font-weight: 300;
-      color: #6a7e9e;
+    /* ── Основной контейнер ── */
+    .container {
+      max-width: 820px;
+      width: 100%;
+      background: #0e121b;
+      border: 2px solid #1f2a3a;
+      border-radius: 8px;
+      padding: 20px 16px 28px;
+      box-shadow: inset 0 0 8px 2px rgba(80, 180, 255, 0.15);
+      animation: pulse-border 4s infinite ease-in-out;
     }
-    h2 {
-      font-size: 18px;
-      font-weight: 400;
-      margin: 26px 0 12px;
-      color: #7a9ec8;
+    @keyframes pulse-border {
+      0% { border-color: #1a2a3a; box-shadow: inset 0 0 8px 2px rgba(80, 180, 255, 0.10); }
+      50% { border-color: #3a7aaa; box-shadow: inset 0 0 12px 4px rgba(80, 180, 255, 0.20); }
+      100% { border-color: #1a2a3a; box-shadow: inset 0 0 8px 2px rgba(80, 180, 255, 0.10); }
     }
-
-    /* ── Строка статуса ── */
-    .status-row {
+    .header {
       display: flex;
       flex-wrap: wrap;
-      gap: 16px 24px;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid #1f2a3a;
+      padding-bottom: 10px;
       margin-bottom: 16px;
+    }
+    .header .title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #8ab8ff;
+      letter-spacing: 1px;
+      text-shadow: 0 0 8px rgba(74, 158, 255, 0.2);
+    }
+    .header .info {
       font-size: 14px;
       color: #6a8aaa;
-    }
-    .status-row span strong {
-      color: #b3d9ff;
-    }
-
-    /* ── Блоки характеристик ── */
-    .stat-block {
-      background: #0e131e;
-      border-radius: 14px;
-      padding: 14px 16px;
-      margin-bottom: 12px;
-      border-left: 3px solid #2a4a6a;
-      transition: 0.3s;
-      cursor: default;
-    }
-    .stat-block:hover {
-      border-left-color: #4a9eff;
-      background: #111a28;
-    }
-
-    .stat-header {
       display: flex;
-      justify-content: space-between;
-      font-size: 16px;
-      font-weight: 500;
-    }
-    .stat-header .label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .stat-header .value {
-      color: #b3d9ff;
-    }
-
-    .stat-bar-wrap {
-      margin-top: 6px;
-      background: #1a2332;
-      border-radius: 20px;
-      height: 8px;
-      overflow: hidden;
-      position: relative;
-    }
-    .stat-bar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #1f6bb0, #4a9eff);
-      border-radius: 20px;
-      transition: width 0.6s ease;
-      animation: stat-fill 0.8s ease forwards;
-    }
-
-    .stat-exp {
-      font-size: 12px;
-      color: #6a7e9e;
-      margin-top: 4px;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    /* ── Сетка квестов ── */
-    .row-2col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
       gap: 16px;
-      margin: 16px 0;
+      flex-wrap: wrap;
     }
-    @media (max-width: 600px) {
-      .row-2col {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
+    .header .info strong {
+      color: #b3d9ff;
     }
 
+    /* ── Карточка характеристик ── */
+    .stat-card {
+      background: #0e131e;
+      border: 1px solid #1a2332;
+      border-radius: 4px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      box-shadow: inset 0 0 4px 1px rgba(80, 180, 255, 0.08);
+      transition: box-shadow 0.3s, border-color 0.3s;
+    }
+    .stat-card:hover {
+      border-color: #2a4a6a;
+      box-shadow: inset 0 0 6px 2px rgba(80, 180, 255, 0.12);
+    }
+    .stat-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .stat-table th {
+      text-align: left;
+      color: #6a8aaa;
+      font-weight: 400;
+      padding: 4px 0;
+      border-bottom: 1px solid #1a2332;
+    }
+    .stat-table td {
+      padding: 6px 0;
+      border-bottom: 1px solid #141c2a;
+      vertical-align: middle;
+    }
+    .stat-table tr:last-child td {
+      border-bottom: none;
+    }
+    /* ── Названия характеристик: золотые и крупнее ── */
+    .stat-table .stat-name {
+      color: #d4af37;           /* золотистый */
+      font-size: 1.25em;        /* в 1.25 раза больше */
+      font-weight: 600;
+      min-width: 100px;
+    }
+    /* ── Значения характеристик: белые, без изменений ── */
+    .stat-table .stat-value {
+      text-align: right;
+      font-weight: 700;
+      color: #ffffff;
+      min-width: 40px;
+    }
+
+    /* ── Карточки квестов ── */
     .card {
       background: #0e131e;
-      border-radius: 16px;
-      padding: 16px 14px;
       border: 1px solid #1a2332;
-      transition: 0.3s;
+      border-radius: 4px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      box-shadow: inset 0 0 4px 1px rgba(80, 180, 255, 0.08);
+      transition: box-shadow 0.3s, border-color 0.3s;
     }
     .card:hover {
       border-color: #2a4a6a;
+      box-shadow: inset 0 0 6px 2px rgba(80, 180, 255, 0.12);
     }
     .card h3 {
-      font-size: 15px;
-      font-weight: 500;
-      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
       color: #7a9ec8;
-      letter-spacing: 0.3px;
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      color: #6a8aaa;
+      font-size: 16px;
+      font-weight: 400;
+      border-bottom: 1px solid #1a2332;
+      padding-bottom: 6px;
+      margin: 24px 0 12px;
+      letter-spacing: 0.5px;
     }
 
     .quest-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 14px;
-      padding: 4px 0;
+      font-size: 13px;
+      padding: 3px 0;
       border-bottom: 1px solid #141c2a;
-      transition: 0.2s;
     }
     .quest-item:last-child {
       border-bottom: none;
     }
     .quest-item input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
       accent-color: #4a9eff;
+      width: 16px;
+      height: 16px;
       cursor: pointer;
       flex-shrink: 0;
     }
     .quest-item.done {
       text-decoration: line-through;
-      opacity: 0.5;
+      opacity: 0.4;
     }
 
-    /* ── Бейджи ── */
     .badge {
       background: #1a2a3e;
       color: #7a9ec8;
-      padding: 2px 14px;
+      padding: 2px 12px;
       border-radius: 30px;
-      font-size: 12px;
+      font-size: 11px;
       display: inline-block;
-      transition: 0.3s;
     }
     .badge.active {
       background: #1a3a5a;
@@ -216,248 +180,261 @@
       border: 1px solid #4a9eff;
     }
 
-    /* ── Кнопки ── */
     .btn {
       background: #1a2a3e;
       border: 1px solid #2a4a6a;
       color: #b3d9ff;
-      padding: 10px 20px;
-      border-radius: 40px;
-      font-size: 15px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: 0.25s;
+      padding: 8px 0;
       width: 100%;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
       margin-top: 8px;
     }
     .btn:hover {
       background: #1f3a5a;
       border-color: #4a9eff;
-      box-shadow: 0 0 20px rgba(74, 158, 255, 0.15);
-    }
-    .btn:active {
-      transform: scale(0.96);
-    }
-    .btn-reset {
-      background: #1a1a2a;
-      border-color: #2a2a3a;
-    }
-    .btn-reset:hover {
-      background: #2a1a2a;
-      border-color: #6a3a4a;
-    }
-
-    /* ── Бонусы ── */
-    .bonus-row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin: 16px 0 8px;
     }
 
     /* ── Ачивки ── */
     .achievement {
       background: #0e131e;
-      border-radius: 12px;
-      padding: 8px 14px;
-      margin: 4px 0;
-      font-size: 14px;
+      border-radius: 4px;
+      padding: 6px 12px;
+      margin: 3px 0;
+      font-size: 13px;
       display: flex;
       justify-content: space-between;
       border-left: 2px solid #1f3a5a;
-      transition: 0.25s;
       position: relative;
       cursor: default;
+      box-shadow: inset 0 0 2px rgba(80,180,255,0.05);
     }
     .achievement.locked {
-      opacity: 0.35;
+      opacity: 0.3;
       border-left-color: #2a2a3a;
     }
     .achievement.locked:hover {
       opacity: 0.7;
-      background: #111a28;
+    }
+    .achievement .ach-tooltip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 0;
+      background: #0e131e;
+      border: 1px solid #2a4a6a;
+      border-radius: 4px;
+      padding: 8px 14px;
+      font-size: 12px;
+      color: #b3d9ff;
+      width: 240px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.8);
+      z-index: 100;
+      pointer-events: none;
+    }
+    .achievement.locked:hover .ach-tooltip {
+      display: block;
     }
     .achievement .ach-name {
       font-weight: 400;
     }
     .achievement .ach-bonus {
       color: #7a9ec8;
-      font-size: 12px;
+      font-size: 11px;
     }
 
-    /* ── Всплывающая подсказка (тултип) для ачивок ── */
-    .ach-tooltip {
-      display: none;
-      position: absolute;
-      bottom: calc(100% + 10px);
-      left: 0;
-      background: #0e131e;
-      border: 1px solid #2a4a6a;
-      border-radius: 12px;
-      padding: 10px 16px;
-      font-size: 13px;
-      color: #b3d9ff;
-      width: 260px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
-      z-index: 100;
-      pointer-events: none;
-      transition: 0.2s;
-    }
-    .achievement.locked:hover .ach-tooltip {
-      display: block;
-    }
-    .ach-tooltip .condition {
-      color: #7a9ec8;
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    /* ── Футер ── */
     .footer-info {
+      font-size: 12px;
+      color: #4a5a6a;
+      margin-top: 16px;
+      border-top: 1px solid #141c2a;
+      padding-top: 12px;
       display: flex;
       justify-content: space-between;
-      font-size: 13px;
-      color: #4a5a6a;
-      margin-top: 20px;
-      border-top: 1px solid #141c2a;
-      padding-top: 16px;
       flex-wrap: wrap;
-      gap: 6px;
     }
 
-    /* ── Анимация уровня (вспышка) ── */
-    @keyframes levelUpFlash {
-      0% { background: #0e131e; }
-      30% { background: #1a3a5a; box-shadow: 0 0 40px rgba(74, 158, 255, 0.3); }
-      70% { background: #0e131e; }
-      100% { background: #0e131e; }
+    /* ── Модальное окно приветствия ── */
+    .welcome-overlay {
+      display: flex;  /* по умолчанию скрыто, но мы покажем через JS */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      backdrop-filter: blur(2px);
     }
-    .stat-block.level-up {
-      animation: levelUpFlash 0.8s ease;
+    .welcome-overlay.hidden {
+      display: none;
+    }
+    .welcome-box {
+      background: #0e121b;
+      border: 2px solid #2a4a6a;
+      border-radius: 8px;
+      padding: 28px 32px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(80, 180, 255, 0.2), inset 0 0 12px 2px rgba(80, 180, 255, 0.10);
+      animation: pulse-border 3s infinite ease-in-out;
+    }
+    .welcome-box h2 {
+      color: #8ab8ff;
+      font-weight: 400;
+      letter-spacing: 1px;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .welcome-box p {
+      color: #b3d9ff;
+      font-size: 16px;
+      margin: 12px 0;
+      line-height: 1.5;
+    }
+    .welcome-box .highlight {
+      color: #d4af37;
+      font-weight: 700;
+    }
+    .welcome-box .btn-accept {
+      background: #1a2a3e;
+      border: 1px solid #4a9eff;
+      color: #b3d9ff;
+      padding: 10px 40px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.25s;
+      margin-top: 12px;
+    }
+    .welcome-box .btn-accept:hover {
+      background: #1f3a5a;
+      border-color: #7ac0ff;
+      box-shadow: 0 0 20px rgba(74, 158, 255, 0.3);
     }
 
-    /* ── Анимация открытия ачивки ── */
-    @keyframes achUnlock {
-      0% { background: #0e131e; transform: scale(1); }
-      30% { background: #1a3a2a; border-color: #4aff8a; transform: scale(1.02); }
-      70% { background: #0e131e; transform: scale(1); }
-      100% { background: #0e131e; }
-    }
-    .achievement.just-unlocked {
-      animation: achUnlock 0.9s ease;
-      border-color: #4aff8a !important;
+    @media (max-width: 600px) {
+      .stat-table .stat-name {
+        font-size: 1.1em;
+        min-width: 70px;
+      }
+      .header .title {
+        font-size: 18px;
+      }
+      .welcome-box {
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
+
+<!-- ОВЕРЛЕЙ ПРИВЕТСТВИЯ -->
+<div class="welcome-overlay" id="welcomeOverlay">
+  <div class="welcome-box">
+    <h2>⚔️ ДОБРО ПОЖАЛОВАТЬ</h2>
+    <p>
+      Охотник, ты пробудился.<br>
+      Твой путь начинается сегодня.
+    </p>
+    <p>
+      Дней в системе: <span class="highlight" id="welcomeDays">1</span>
+    </p>
+    <button class="btn-accept" id="welcomeAccept">ПРИНЯТЬ</button>
+  </div>
+</div>
+
+<!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
 <div class="container" id="app">
 
-  <h1>
-    <span>⚔️ СИСТЕМА ОХОТНИКА</span>
-    <small>v2.0</small>
-  </h1>
-
-  <!-- Строка статуса -->
-  <div class="status-row">
-    <span>📅 День: <strong id="dayCounter">1</strong></span>
-    <span>🔥 Стрик: <strong id="streakDisplay">0</strong> дн.</span>
-    <span>🏅 Ранг квеста: <strong id="rankDisplay">E</strong></span>
-    <span>📦 Очков стат: <strong id="freePoints">0</strong></span>
-  </div>
-
-  <!-- Характеристики -->
-  <div id="statsContainer"></div>
-
-  <!-- Квесты -->
-  <div class="row-2col">
-    <div class="card" id="questPhysical">
-      <h3>💪 ФИЗИЧЕСКИЙ КВЕСТ</h3>
-      <div id="physQuestList"></div>
-    </div>
-    <div class="card" id="questMental">
-      <h3>🧠 МЕНТАЛЬНЫЙ КВЕСТ</h3>
-      <div id="mentQuestList"></div>
+  <div class="header">
+    <span class="title">📊 ХАРАКТЕРИСТИКИ</span>
+    <div class="info">
+      <span>Уровень <strong id="levelDisplay">1</strong></span>
+      <span>Опыт <strong id="expDisplay">0</strong></span>
     </div>
   </div>
-  <div class="card" id="questSocial" style="margin-top:0;">
-    <h3>🗣 СОЦИАЛЬНЫЙ КВЕСТ</h3>
+
+  <!-- Таблица характеристик в рамке -->
+  <div class="stat-card">
+    <table class="stat-table">
+      <thead>
+        <tr>
+          <th style="width:60%;">Характеристика</th>
+          <th style="width:40%; text-align:right;">Значение</th>
+        </tr>
+      </thead>
+      <tbody id="statBody">
+        <!-- генерируется скриптом -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">📋 ЕЖЕДНЕВНЫЕ КВЕСТЫ</div>
+  <div class="card">
+    <h3>💪 Физический</h3>
+    <div id="physQuestList"></div>
+  </div>
+  <div class="card">
+    <h3>🧠 Ментальный</h3>
+    <div id="mentQuestList"></div>
+  </div>
+  <div class="card">
+    <h3>🗣 Социальный</h3>
     <div id="socQuestList"></div>
   </div>
-
-  <!-- Бонусы -->
-  <div class="bonus-row">
+  <div style="display:flex; gap:12px; flex-wrap:wrap; margin:8px 0;">
     <span class="badge" id="bonusTri">🌟 Триединство: нет</span>
     <span class="badge" id="bonusStreak">🔥 Стрик 7+: нет</span>
   </div>
-
-  <!-- Кнопки -->
   <button class="btn" id="btnNewDay">🔄 НОВЫЙ ДЕНЬ</button>
-  <button class="btn btn-reset" id="btnReset" style="margin-top:6px;">🔄 Сбросить прогресс</button>
 
-  <!-- Ачивки -->
-  <h2>🏆 АЧИВКИ</h2>
+  <div class="section-title">🏆 АЧИВКИ</div>
   <div id="achievementList"></div>
 
   <div class="footer-info">
-    <span>💾 Сохраняется автоматически</span>
-    <span>⏱️ Последнее обновление: <span id="lastSave">—</span></span>
+    <span>💾 Автосохранение</span>
+    <span>⏱️ <span id="lastSave">—</span></span>
   </div>
 </div>
 
 <script>
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  1. ЗВУКИ (Web Audio — без внешних файлов)
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  ЗВУКИ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   let audioCtx = null;
-
-  function initAudio() {
-    if (!audioCtx) {
-      audioCtx = new AudioCtx();
-    }
-  }
-
-  function playTone(freq, duration, type = 'sine', volume = 0.15) {
+  function initAudio() { if (!audioCtx) audioCtx = new AudioCtx(); }
+  function playTone(freq, dur, type='sine', vol=0.12) {
     try {
       initAudio();
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.type = type;
       osc.frequency.value = freq;
-      gain.gain.value = volume;
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      gain.gain.value = vol;
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start();
-      osc.stop(audioCtx.currentTime + duration);
-    } catch (e) { /* тихо падаем */ }
+      osc.stop(audioCtx.currentTime + dur);
+    } catch(e) {}
   }
+  function soundClick() { playTone(440, 0.05, 'sine', 0.06); }
+  function soundLevelUp() { playTone(523,0.1); setTimeout(()=>playTone(659,0.1),100); setTimeout(()=>playTone(784,0.15),200); }
+  function soundAchievement() { playTone(880,0.1); setTimeout(()=>playTone(1109,0.1),120); setTimeout(()=>playTone(1319,0.2),240); }
+  function soundNewDay() { playTone(330,0.08); setTimeout(()=>playTone(440,0.08),100); setTimeout(()=>playTone(554,0.12),200); }
 
-  function soundLevelUp() {
-    playTone(523, 0.1, 'sine', 0.12); // C5
-    setTimeout(() => playTone(659, 0.1, 'sine', 0.12), 100); // E5
-    setTimeout(() => playTone(784, 0.15, 'sine', 0.14), 200); // G5
-  }
-
-  function soundAchievement() {
-    playTone(880, 0.1, 'sine', 0.13);
-    setTimeout(() => playTone(1109, 0.1, 'sine', 0.13), 120);
-    setTimeout(() => playTone(1319, 0.2, 'sine', 0.15), 240);
-  }
-
-  function soundClick() {
-    playTone(440, 0.05, 'sine', 0.06);
-  }
-
-  function soundNewDay() {
-    playTone(330, 0.08, 'sine', 0.08);
-    setTimeout(() => playTone(440, 0.08, 'sine', 0.08), 100);
-    setTimeout(() => playTone(554, 0.12, 'sine', 0.10), 200);
-  }
-
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  2. ДАННЫЕ ПО УМОЛЧАНИЮ
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  ДАННЫЕ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const DEFAULT = {
     day: 1,
     streak: 0,
@@ -471,19 +448,14 @@
       PER: { level: 10, exp: 0 }
     },
     quests: {
-      phys: [false, false, false, false, false],
-      ment: [false, false, false, false, false],
-      soc: [false, false, false, false, false]
+      phys: [false,false,false,false,false],
+      ment: [false,false,false,false,false],
+      soc: [false,false,false,false,false]
     },
     unlockedAchievements: [],
-    dayStarted: false,
-    // для отслеживания только что открытых ачивок
     justUnlocked: []
   };
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  3. ЗАГРУЗКА / СОХРАНЕНИЕ
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function loadData() {
     try {
       const raw = localStorage.getItem('hunterSystemData');
@@ -494,7 +466,7 @@
         }
         return parsed;
       }
-    } catch (e) { /* ignore */ }
+    } catch(e) {}
     return JSON.parse(JSON.stringify(DEFAULT));
   }
 
@@ -503,9 +475,6 @@
     document.getElementById('lastSave').textContent = new Date().toLocaleTimeString();
   }
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  4. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function expToNext(level) {
     return Math.round(100 * (1 + (level - 1) * 0.08));
   }
@@ -523,9 +492,123 @@
     return 'A';
   }
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  5. СПИСОК АЧИВОК С УСЛОВИЯМИ
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  ОТРИСОВКА
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function renderAll(data) {
+    const s = data.stats;
+    const avg = avgAllMain(data);
+    const rank = getRank(avg);
+
+    // Уровень теперь вычисляется динамически
+    document.getElementById('levelDisplay').textContent = Math.round(avg);
+    document.getElementById('expDisplay').textContent = Math.round(s.STR.exp + s.AGI.exp + s.VIT.exp + s.INT.exp + s.CHA.exp);
+
+    renderStatTable(data);
+    renderQuest('phys', data.quests.phys, getQuestList('phys', rank));
+    renderQuest('ment', data.quests.ment, getQuestList('ment', rank));
+    renderQuest('soc', data.quests.soc, getQuestList('soc', rank));
+
+    const allDone = data.quests.phys.every(v=>v) && data.quests.ment.every(v=>v) && data.quests.soc.every(v=>v);
+    const triEl = document.getElementById('bonusTri');
+    triEl.textContent = allDone ? '🌟 Триединство: АКТИВНО' : '🌟 Триединство: нет';
+    triEl.className = 'badge' + (allDone ? ' active' : '');
+    const streakEl = document.getElementById('bonusStreak');
+    const hasStreak = data.streak >= 7;
+    streakEl.textContent = hasStreak ? '🔥 Стрик 7+: АКТИВНО' : '🔥 Стрик 7+: нет';
+    streakEl.className = 'badge' + (hasStreak ? ' active' : '');
+
+    renderAchievements(data);
+    saveData(data);
+  }
+
+  function renderStatTable(data) {
+    const stats = data.stats;
+    const rows = [
+      { key: 'STR', label: '💪 Физическая сила' },
+      { key: 'VIT', label: '❤️ Жизненная сила' },
+      { key: 'AGI', label: '🏃 Ловкость' },
+      { key: 'INT', label: '🧠 Интеллект' },
+      { key: 'PER', label: '👁 Восприятие' },
+      { key: 'CHA', label: '🗣 Харизма' }
+    ];
+    const tbody = document.getElementById('statBody');
+    tbody.innerHTML = '';
+    rows.forEach(row => {
+      const st = stats[row.key];
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="stat-name">${row.label}</td>
+        <td class="stat-value">${st.level}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderQuest(type, checks, items) {
+    const containerId = type === 'phys' ? 'physQuestList' : (type === 'ment' ? 'mentQuestList' : 'socQuestList');
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    items.forEach((text, idx) => {
+      const checked = checks[idx] || false;
+      const div = document.createElement('div');
+      div.className = 'quest-item' + (checked ? ' done' : '');
+      div.innerHTML = `
+        <input type="checkbox" ${checked ? 'checked' : ''} data-type="${type}" data-idx="${idx}">
+        <span>${text}</span>
+      `;
+      container.appendChild(div);
+    });
+    container.querySelectorAll('input[type="checkbox"]').forEach(inp => {
+      inp.addEventListener('change', function() {
+        soundClick();
+        const type = this.dataset.type;
+        const idx = parseInt(this.dataset.idx);
+        const data = loadData();
+        data.quests[type][idx] = this.checked;
+        if (!data.dayStarted) data.dayStarted = true;
+        saveData(data);
+        renderAll(data);
+      });
+    });
+  }
+
+  function getQuestList(type, rank) {
+    const ranks = ['E','D','C','B','A'];
+    const r = Math.min(ranks.indexOf(rank), 4);
+    const idx = r >= 0 ? r : 0;
+    const phys = [
+      ['Отжимания с колен — 3×12', 'Отжимания — 3×15', 'Отжимания с рюкз. 5кг — 3×20', 'Отжимания с рюкз. 10кг — 3×25', 'Отжимания с рюкз. 15кг — 3×30'],
+      ['Приседания без веса — 3×20', 'Приседания с рюкз. 5кг — 3×25', 'Приседания с рюкз. 10кг — 3×30', 'Приседания с рюкз. 15кг — 3×35', 'Приседания с рюкз. 20кг — 3×40'],
+      ['Планка на руках — 3×25с', 'Планка на локтях — 3×35с', 'Планка с 5кг — 3×45с', 'Планка с 10кг — 3×60с', 'Планка с 15кг — 3×75с'],
+      ['Выпады — 3×10', 'Выпады с 5кг — 3×12', 'Бёрпи — 3×10', 'Бёрпи с отжим. — 3×15', 'Бёрпи с прыжком — 3×20'],
+      ['Ходьба 30 мин', 'Ходьба 40 мин', 'Бег 3 км', 'Бег 5 км', 'Бег 7 км (интервалы)']
+    ];
+    const ment = [
+      ['Чтение 20 мин', 'Чтение 30 мин + анализ', 'Чтение 40 мин + разбор', 'Чтение 60 мин + выводы', 'Чтение 90 мин + критика'],
+      ['Логика 15 мин', 'Шахматы/задачи 20 мин', 'Дебаты (письм.) 15 мин', 'Статья 500 зн.', 'Эссе 1000 зн.'],
+      ['5 слов', '10 слов + диалог', '15 слов', '20 слов', '30 слов'],
+      ['Конспект 5-7 пр.', 'Эссе 1 абзац', 'Видеолекция 20 мин', '3 задачи', 'Новая тема 40 мин'],
+      ['Медитация 5 мин', 'Медитация 10 мин', 'Медитация 15 мин', 'Медитация 20 мин', 'Скорочтение 15 мин']
+    ];
+    const soc = [
+      ['Слушание 5 мин', 'Слушание 10 мин', 'Слушание 15 мин + анализ', 'Слушание 20 мин + разбор', 'Слушание 30 мин + резюме'],
+      ['Речь 2 мин', 'Речь 3 мин (запись)', 'Речь 5 мин (камера)', 'Речь 7 мин + аргум.', 'Речь 10 мин + импров.'],
+      ['1 комплимент', '2 комплимента', '3 комплимента', 'Новый контакт', 'Публичный пост'],
+      ['Дневник 3 пр.', 'Дневник 5 пр.', 'Дневник + идея', 'Дневник + план', 'Дневник + рефлексия'],
+      ['Осанка/улыбка 2 мин', 'Осанка 5 мин', 'Голос 5 мин', 'Эмпатия', 'Наставничество']
+    ];
+    let list = [];
+    if (type === 'phys') {
+      for (let i=0; i<5; i++) list.push(phys[i][idx] || phys[i][0]);
+    } else if (type === 'ment') {
+      for (let i=0; i<5; i++) list.push(ment[i][idx] || ment[i][0]);
+    } else {
+      for (let i=0; i<5; i++) list.push(soc[i][idx] || soc[i][0]);
+    }
+    return list;
+  }
+
   function getAchievementsList() {
     return [
       { name: 'Первый шаг', bonus: '+5 EXP ко всем', condition: 'Выполнить любой квест 1 раз' },
@@ -561,198 +644,46 @@
     ];
   }
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  6. РЕНДЕРИНГ
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  function renderAll(data) {
-    const s = data.stats;
-    const avg = avgAllMain(data);
-    const rank = getRank(avg);
-
-    // Счётчики
-    document.getElementById('dayCounter').textContent = data.day;
-    document.getElementById('streakDisplay').textContent = data.streak;
-    document.getElementById('rankDisplay').textContent = rank;
-    document.getElementById('freePoints').textContent = data.freePoints;
-
-    // ── Статы ──
-    const statNames = ['STR', 'AGI', 'VIT', 'INT', 'CHA', 'PER'];
-    const statLabels = {
-      STR: '💪 Сила',
-      AGI: '🏃 Ловкость',
-      VIT: '❤️ Живучесть',
-      INT: '🧠 Интеллект',
-      CHA: '🗣 Харизма',
-      PER: '👁 Восприятие'
-    };
-    const container = document.getElementById('statsContainer');
-    container.innerHTML = '';
-    statNames.forEach(key => {
-      const st = s[key];
-      const need = expToNext(st.level);
-      const progress = Math.min(100, (st.exp / need) * 100);
-      const div = document.createElement('div');
-      div.className = 'stat-block';
-      div.id = 'stat-' + key;
-      div.innerHTML = `
-        <div class="stat-header">
-          <span class="label">${statLabels[key]}</span>
-          <span class="value">${st.level} <span style="font-size:12px;color:#4a6a8a;">/ 100</span></span>
-        </div>
-        <div class="stat-bar-wrap">
-          <div class="stat-bar" style="--fill: ${progress}%; width: ${progress}%;"></div>
-        </div>
-        <div class="stat-exp">
-          <span>EXP: ${Math.round(st.exp)} / ${need}</span>
-          <span>${Math.round(progress)}%</span>
-        </div>
-      `;
-      container.appendChild(div);
-    });
-
-    // ── Квесты ──
-    renderQuest('phys', data.quests.phys, getQuestList('phys', rank));
-    renderQuest('ment', data.quests.ment, getQuestList('ment', rank));
-    renderQuest('soc', data.quests.soc, getQuestList('soc', rank));
-
-    // ── Бонусы ──
-    const allDone = data.quests.phys.every(v=>v) && data.quests.ment.every(v=>v) && data.quests.soc.every(v=>v);
-    const triEl = document.getElementById('bonusTri');
-    triEl.textContent = allDone ? '🌟 Триединство: АКТИВНО' : '🌟 Триединство: нет';
-    triEl.className = 'badge' + (allDone ? ' active' : '');
-
-    const streakEl = document.getElementById('bonusStreak');
-    const hasStreak = data.streak >= 7;
-    streakEl.textContent = hasStreak ? '🔥 Стрик 7+: АКТИВНО' : '🔥 Стрик 7+: нет';
-    streakEl.className = 'badge' + (hasStreak ? ' active' : '');
-
-    // ── Ачивки ──
-    renderAchievements(data);
-
-    // Сохраняем
-    saveData(data);
-  }
-
-  // ── Рендер одного квеста ──
-  function renderQuest(type, checks, items) {
-    const containerId = type === 'phys' ? 'physQuestList' : (type === 'ment' ? 'mentQuestList' : 'socQuestList');
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-    items.forEach((text, idx) => {
-      const checked = checks[idx] || false;
-      const div = document.createElement('div');
-      div.className = 'quest-item' + (checked ? ' done' : '');
-      div.innerHTML = `
-        <input type="checkbox" ${checked ? 'checked' : ''} data-type="${type}" data-idx="${idx}">
-        <span>${text}</span>
-      `;
-      container.appendChild(div);
-    });
-    container.querySelectorAll('input[type="checkbox"]').forEach(inp => {
-      inp.addEventListener('change', function() {
-        soundClick();
-        const type = this.dataset.type;
-        const idx = parseInt(this.dataset.idx);
-        const data = loadData();
-        data.quests[type][idx] = this.checked;
-        if (!data.dayStarted) data.dayStarted = true;
-        saveData(data);
-        renderAll(data);
-      });
-    });
-  }
-
-  // ── Список квестов по рангу ──
-  function getQuestList(type, rank) {
-    const ranks = ['E','D','C','B','A'];
-    const idx = Math.min(ranks.indexOf(rank), 4);
-    const r = idx >= 0 ? idx : 0;
-
-    const phys = [
-      ['Отжимания с колен — 3×12', 'Отжимания — 3×15', 'Отжимания с рюкз. 5кг — 3×20', 'Отжимания с рюкз. 10кг — 3×25', 'Отжимания с рюкз. 15кг — 3×30'],
-      ['Приседания без веса — 3×20', 'Приседания с рюкз. 5кг — 3×25', 'Приседания с рюкз. 10кг — 3×30', 'Приседания с рюкз. 15кг — 3×35', 'Приседания с рюкз. 20кг — 3×40'],
-      ['Планка на руках — 3×25с', 'Планка на локтях — 3×35с', 'Планка с 5кг — 3×45с', 'Планка с 10кг — 3×60с', 'Планка с 15кг — 3×75с'],
-      ['Выпады — 3×10', 'Выпады с 5кг — 3×12', 'Бёрпи — 3×10', 'Бёрпи с отжим. — 3×15', 'Бёрпи с прыжком — 3×20'],
-      ['Ходьба 30 мин', 'Ходьба 40 мин', 'Бег 3 км', 'Бег 5 км', 'Бег 7 км (интервалы)']
-    ];
-    const ment = [
-      ['Чтение 20 мин', 'Чтение 30 мин + анализ', 'Чтение 40 мин + разбор', 'Чтение 60 мин + выводы', 'Чтение 90 мин + критика'],
-      ['Логика 15 мин', 'Шахматы/задачи 20 мин', 'Дебаты (письм.) 15 мин', 'Статья 500 зн.', 'Эссе 1000 зн.'],
-      ['5 слов', '10 слов + диалог', '15 слов', '20 слов', '30 слов'],
-      ['Конспект 5-7 пр.', 'Эссе 1 абзац', 'Видеолекция 20 мин', '3 задачи', 'Новая тема 40 мин'],
-      ['Медитация 5 мин', 'Медитация 10 мин', 'Медитация 15 мин', 'Медитация 20 мин', 'Скорочтение 15 мин']
-    ];
-    const soc = [
-      ['Слушание 5 мин', 'Слушание 10 мин', 'Слушание 15 мин + анализ', 'Слушание 20 мин + разбор', 'Слушание 30 мин + резюме'],
-      ['Речь 2 мин', 'Речь 3 мин (запись)', 'Речь 5 мин (камера)', 'Речь 7 мин + аргум.', 'Речь 10 мин + импров.'],
-      ['1 комплимент', '2 комплимента', '3 комплимента', 'Новый контакт', 'Публичный пост'],
-      ['Дневник 3 пр.', 'Дневник 5 пр.', 'Дневник + идея', 'Дневник + план', 'Дневник + рефлексия'],
-      ['Осанка/улыбка 2 мин', 'Осанка 5 мин', 'Голос 5 мин', 'Эмпатия', 'Наставничество']
-    ];
-
-    let list = [];
-    if (type === 'phys') {
-      for (let i=0; i<5; i++) list.push(phys[i][r] || phys[i][0]);
-    } else if (type === 'ment') {
-      for (let i=0; i<5; i++) list.push(ment[i][r] || ment[i][0]);
-    } else {
-      for (let i=0; i<5; i++) list.push(soc[i][r] || soc[i][0]);
-    }
-    return list;
-  }
-
-  // ── Ачивки с тултипами ──
   function renderAchievements(data) {
     const list = getAchievementsList();
     const unlocked = data.unlockedAchievements || [];
     const container = document.getElementById('achievementList');
     container.innerHTML = '';
-
     list.forEach((ach, idx) => {
       const isUnlocked = unlocked.includes(idx);
       const div = document.createElement('div');
       div.className = 'achievement' + (isUnlocked ? '' : ' locked');
-      if (data.justUnlocked && data.justUnlocked.includes(idx)) {
-        div.classList.add('just-unlocked');
-        setTimeout(() => div.classList.remove('just-unlocked'), 1000);
-      }
       div.innerHTML = `
         <span class="ach-name">${isUnlocked ? '✅' : '🔒'} ${ach.name}</span>
         <span class="ach-bonus">${ach.bonus}</span>
         <div class="ach-tooltip">
           <strong>${ach.name}</strong>
-          <div class="condition">📋 Условие: ${ach.condition}</div>
-          <div style="margin-top:4px;color:#6a8aaa;font-size:12px;">🎁 Награда: ${ach.bonus}</div>
+          <div style="margin-top:4px;color:#6a8aaa;font-size:12px;">📋 ${ach.condition}</div>
+          <div style="margin-top:2px;color:#7a9ec8;font-size:11px;">🎁 ${ach.bonus}</div>
         </div>
       `;
       container.appendChild(div);
     });
   }
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  7. НОВЫЙ ДЕНЬ
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  НОВЫЙ ДЕНЬ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function newDay() {
     soundNewDay();
     let data = loadData();
-
     const allPhys = data.quests.phys.every(v=>v);
     const allMent = data.quests.ment.every(v=>v);
     const allSoc = data.quests.soc.every(v=>v);
     const tripleBonus = allPhys && allMent && allSoc;
     const anyComplete = allPhys || allMent || allSoc;
-
-    if (anyComplete) {
-      data.streak += 1;
-    } else {
-      data.streak = 0;
-    }
+    if (anyComplete) data.streak += 1;
+    else data.streak = 0;
 
     const rank = getRank(avgAllMain(data));
     const bonusMap = { E:15, D:20, C:25, B:30, A:35 };
     const baseBonus = bonusMap[rank] || 15;
 
-    // Начисляем EXP
     if (allPhys) {
       data.stats.STR.exp += baseBonus + (data.streak >= 7 ? 10 : 0);
       data.stats.AGI.exp += baseBonus + (data.streak >= 7 ? 10 : 0);
@@ -765,15 +696,11 @@
       data.stats.CHA.exp += baseBonus + (data.streak >= 7 ? 10 : 0);
     }
     if (tripleBonus) {
-      data.stats.STR.exp += 30;
-      data.stats.AGI.exp += 30;
-      data.stats.VIT.exp += 30;
-      data.stats.INT.exp += 30;
-      data.stats.CHA.exp += 30;
+      data.stats.STR.exp += 30; data.stats.AGI.exp += 30; data.stats.VIT.exp += 30;
+      data.stats.INT.exp += 30; data.stats.CHA.exp += 30;
       data.freePoints += 1;
     }
 
-    // Повышаем уровни
     const statKeys = ['STR','AGI','VIT','INT','CHA'];
     let leveled = false;
     statKeys.forEach(key => {
@@ -786,16 +713,7 @@
     });
     if (leveled) {
       soundLevelUp();
-      // анимация на стат-блоках
-      setTimeout(() => {
-        statKeys.forEach(key => {
-          const el = document.getElementById('stat-' + key);
-          if (el) {
-            el.classList.add('level-up');
-            setTimeout(() => el.classList.remove('level-up'), 900);
-          }
-        });
-      }, 100);
+      data.freePoints += 3;
     }
 
     // PER пассивно
@@ -803,18 +721,14 @@
     const chaLv = data.stats.CHA.level;
     const bonusPer = Math.floor(data.day / 10) * 0.5;
     const newPer = Math.floor(10 + Math.floor(intLv / 10) + Math.floor(chaLv / 15) + bonusPer);
-    if (newPer > data.stats.PER.level) {
-      data.stats.PER.level = newPer;
-    }
+    if (newPer > data.stats.PER.level) data.stats.PER.level = newPer;
 
-    // Сброс чекбоксов
     data.quests.phys = [false,false,false,false,false];
     data.quests.ment = [false,false,false,false,false];
     data.quests.soc = [false,false,false,false,false];
     data.dayStarted = false;
     data.day += 1;
 
-    // Проверка ачивок
     const newUnlocks = checkAchievements(data);
     if (newUnlocks.length > 0) {
       soundAchievement();
@@ -827,21 +741,19 @@
     renderAll(data);
   }
 
-  // ── Проверка ачивок ──
   function checkAchievements(data) {
     const unlocked = data.unlockedAchievements || [];
     const s = data.stats;
     const newUnlocks = [];
     const allMain = s.STR.level >= 30 && s.AGI.level >= 30 && s.VIT.level >= 30 && s.INT.level >= 30 && s.CHA.level >= 30;
-
     const checks = [
-      { idx: 0, cond: data.day > 1 }, // Первый шаг
-      { idx: 1, cond: data.day >= 7 }, // Новичок (упрощённо)
+      { idx: 0, cond: data.day > 1 },
+      { idx: 1, cond: data.day >= 7 },
       { idx: 2, cond: s.STR.level >= 25 },
       { idx: 3, cond: s.AGI.level >= 25 },
       { idx: 4, cond: s.VIT.level >= 30 },
       { idx: 5, cond: s.STR.level >= 30 && s.AGI.level >= 30 && s.VIT.level >= 30 },
-      { idx: 6, cond: false }, // 50 отжиманий — вручную не отслеживаем
+      { idx: 6, cond: false },
       { idx: 7, cond: false },
       { idx: 8, cond: data.day >= 30 },
       { idx: 9, cond: s.STR.level >= 50 && s.AGI.level >= 50 && s.VIT.level >= 50 },
@@ -866,37 +778,60 @@
       { idx: 28, cond: data.day >= 365 },
       { idx: 29, cond: s.STR.level >= 70 || s.AGI.level >= 70 || s.VIT.level >= 70 || s.INT.level >= 70 || s.CHA.level >= 70 }
     ];
-
     checks.forEach(c => {
       if (c.cond && !unlocked.includes(c.idx)) {
         unlocked.push(c.idx);
         newUnlocks.push(c.idx);
       }
     });
-
     data.unlockedAchievements = [...new Set(unlocked)];
     return newUnlocks;
   }
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  8. СБРОС
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  function resetProgress() {
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  ПРИВЕТСТВИЕ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function showWelcome() {
+    const data = loadData();
+    document.getElementById('welcomeDays').textContent = data.day;
+    document.getElementById('welcomeOverlay').classList.remove('hidden');
+  }
+
+  function hideWelcome() {
+    document.getElementById('welcomeOverlay').classList.add('hidden');
+    // сохраняем состояние, чтобы больше не показывать в этой сессии
+    sessionStorage.setItem('welcomeShown', 'true');
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  ПОЛНЫЙ СБРОС
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function resetFull() {
     if (confirm('Сбросить весь прогресс?')) {
       soundClick();
       localStorage.removeItem('hunterSystemData');
+      sessionStorage.removeItem('welcomeShown');
       location.reload();
     }
   }
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  9. СТАРТ
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  СТАРТ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   let appData = loadData();
   renderAll(appData);
 
+  // Показываем приветствие, если ещё не показывали в этой сессии
+  if (!sessionStorage.getItem('welcomeShown')) {
+    showWelcome();
+  }
+
+  // Кнопка "Принять" в приветствии
+  document.getElementById('welcomeAccept').addEventListener('click', hideWelcome);
+
+  // Основные кнопки
   document.getElementById('btnNewDay').addEventListener('click', newDay);
-  document.getElementById('btnReset').addEventListener('click', resetProgress);
+  document.querySelector('.header .title').addEventListener('dblclick', resetFull);
 
   window.addEventListener('beforeunload', () => {
     const data = loadData();
