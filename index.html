@@ -38,7 +38,7 @@
     }
     .header .title { font-size: 22px; font-weight: 700; color: #8ab8ff; letter-spacing: 1px; text-shadow: 0 0 8px rgba(74,158,255,0.2); }
     .header .info {
-      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
       font-size: 14px; color: #6a8aaa;
     }
     .header .info strong { color: #b3d9ff; }
@@ -70,7 +70,28 @@
     .profile-info .field label { color: #6a8aaa; min-width: 60px; }
     .profile-info .field input { background: #1a2332; border: 1px solid #2a3a4a; color: #b3d9ff; padding: 4px 8px; border-radius: 4px; font-family: inherit; font-size: 15px; flex: 1; min-width: 80px; outline: none; transition: border 0.2s; }
     .profile-info .field input:focus { border-color: #4a9eff; }
-    .profile-info .field .title-value { color: #d4af37; font-weight: 700; font-size: 16px; }
+    .profile-info .field .title-value {
+      color: #d4af37;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: default;
+    }
+    .profile-info .field .btn-select-title {
+      background: #1a2a3e;
+      border: 1px solid #2a4a6a;
+      color: #b3d9ff;
+      padding: 2px 12px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    .profile-info .field .btn-select-title:hover {
+      background: #1f3a5a;
+      border-color: #4a9eff;
+    }
     .profile-photo {
       flex: 1; min-width: 120px; max-width: 160px; aspect-ratio: 3/4;
       background: #1a2332; border: 1px solid #2a3a4a; border-radius: 4px;
@@ -158,17 +179,6 @@
     .btn-reset { background: #2a1a1a; border-color: #4a2a2a; color: #aa8a8a; flex: 0.6; }
     .btn-reset:hover { background: #3a1a1a; border-color: #6a3a3a; color: #ccaaaa; }
 
-    /* Титулы */
-    .title-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 12px 0; }
-    .title-card { background: #0e131e; border: 1px solid #1a2332; border-radius: 4px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; transition: border 0.2s, opacity 0.2s; }
-    .title-card.locked { opacity: 0.35; border-color: #2a2a3a; }
-    .title-card .title-name { color: #d4af37; font-weight: 600; font-size: 15px; }
-    .title-card .title-status { font-size: 12px; color: #6a8aaa; }
-    .title-card .title-select-btn { background: #1a2a3e; border: 1px solid #2a4a6a; color: #b3d9ff; padding: 2px 12px; border-radius: 4px; font-family: inherit; font-size: 12px; cursor: pointer; transition: 0.2s; }
-    .title-card .title-select-btn:hover:not(:disabled) { background: #1f3a5a; border-color: #4a9eff; }
-    .title-card .title-select-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .title-card.selected { border-color: #4a9eff; box-shadow: 0 0 8px rgba(74,158,255,0.3); }
-
     /* Достижения */
     .achievement { background: #0e131e; border-radius: 4px; padding: 6px 12px; margin: 3px 0; font-size: 13px; display: flex; justify-content: space-between; border-left: 2px solid #1f3a5a; position: relative; cursor: default; box-shadow: inset 0 0 2px rgba(80,180,255,0.05); }
     .achievement.locked { opacity: 0.3; border-left-color: #2a2a3a; }
@@ -180,7 +190,7 @@
 
     .footer-info { font-size: 12px; color: #4a5a6a; margin-top: 16px; border-top: 1px solid #141c2a; padding-top: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; }
 
-    /* Оверлей сообщений (приветствие) */
+    /* Оверлей приветствия */
     .welcome-overlay { display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(2px); }
     .welcome-overlay.hidden { display: none; }
     .welcome-box { background: #0e121b; border: 2px solid #2a4a6a; border-radius: 8px; padding: 28px 32px; max-width: 480px; width: 90%; text-align: center; box-shadow: 0 0 40px rgba(80,180,255,0.2), inset 0 0 12px 2px rgba(80,180,255,0.10); animation: pulse-border 3s infinite ease-in-out; }
@@ -190,7 +200,139 @@
     .welcome-box .btn-accept { background: #1a2a3e; border: 1px solid #4a9eff; color: #b3d9ff; padding: 10px 40px; border-radius: 4px; font-family: inherit; font-size: 16px; cursor: pointer; transition: 0.25s; margin-top: 12px; }
     .welcome-box .btn-accept:hover { background: #1f3a5a; border-color: #7ac0ff; box-shadow: 0 0 20px rgba(74,158,255,0.3); }
 
-    /* Стили для модального окна настроек */
+    /* Сообщение о настройке */
+    .setup-msg-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 2500;
+      backdrop-filter: blur(2px);
+      animation: fadeInOverlay 0.3s ease;
+    }
+    .setup-msg-overlay.active { display: flex; }
+    .setup-msg-box {
+      background: #0e121b;
+      border: 2px solid #2a4a6a;
+      border-radius: 8px;
+      padding: 28px 32px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(80,180,255,0.2), inset 0 0 12px 2px rgba(80,180,255,0.10);
+      animation: scaleIn 0.25s ease;
+    }
+    @keyframes scaleIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .setup-msg-box h2 { color: #d4af37; font-weight: 400; letter-spacing: 1px; font-size: 22px; margin-bottom: 12px; }
+    .setup-msg-box p { color: #b3d9ff; font-size: 16px; line-height: 1.5; }
+    .setup-msg-box .btn-accept-setup {
+      background: #1a2a3e; border: 1px solid #4a9eff; color: #b3d9ff; padding: 10px 40px; border-radius: 4px; font-family: inherit; font-size: 16px; cursor: pointer; transition: 0.25s; margin-top: 16px;
+    }
+    .setup-msg-box .btn-accept-setup:hover { background: #1f3a5a; border-color: #7ac0ff; }
+
+    /* Модальное окно выбора титулов */
+    .title-select-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 3000;
+      backdrop-filter: blur(3px);
+      animation: fadeInOverlay 0.3s ease;
+    }
+    .title-select-overlay.active { display: flex; }
+    .title-select-box {
+      background: #0e121b;
+      border: 2px solid #2a4a6a;
+      border-radius: 8px;
+      padding: 20px 24px;
+      max-width: 440px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 0 40px rgba(80,180,255,0.2), inset 0 0 12px 2px rgba(80,180,255,0.10);
+      animation: scaleIn 0.25s ease;
+    }
+    .title-select-box h2 {
+      color: #8ab8ff;
+      font-weight: 400;
+      letter-spacing: 1px;
+      font-size: 22px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .title-select-box .close-btn {
+      float: right;
+      background: transparent;
+      border: none;
+      color: #6a8aaa;
+      font-size: 24px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .title-select-box .close-btn:hover { color: #b3d9ff; }
+    .title-select-box .title-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .title-select-box .title-item {
+      background: #0e131e;
+      border: 1px solid #1a2332;
+      border-radius: 4px;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: border 0.2s, opacity 0.2s;
+    }
+    .title-select-box .title-item.locked {
+      opacity: 0.35;
+      border-color: #2a2a3a;
+    }
+    .title-select-box .title-item .title-name {
+      color: #d4af37;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .title-select-box .title-item .title-status {
+      font-size: 12px;
+      color: #6a8aaa;
+    }
+    .title-select-box .title-item .title-select-btn {
+      background: #1a2a3e;
+      border: 1px solid #2a4a6a;
+      color: #b3d9ff;
+      padding: 2px 14px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .title-select-box .title-item .title-select-btn:hover:not(:disabled) {
+      background: #1f3a5a;
+      border-color: #4a9eff;
+    }
+    .title-select-box .title-item .title-select-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .title-select-box .title-item.selected {
+      border-color: #4a9eff;
+      box-shadow: 0 0 8px rgba(74,158,255,0.3);
+    }
+
+    /* Стили для настроек (модальное окно) */
     .settings-overlay {
       display: none;
       position: fixed;
@@ -204,10 +346,6 @@
       animation: fadeInOverlay 0.3s ease;
     }
     .settings-overlay.active { display: flex; }
-    @keyframes fadeInOverlay {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
     .settings-box {
       background: #0e121b;
       border: 2px solid #2a4a6a;
@@ -219,10 +357,6 @@
       overflow-y: auto;
       box-shadow: 0 0 40px rgba(80,180,255,0.2), inset 0 0 12px 2px rgba(80,180,255,0.10);
       animation: scaleIn 0.25s ease;
-    }
-    @keyframes scaleIn {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
     }
     .settings-box h2 {
       color: #8ab8ff;
@@ -242,7 +376,6 @@
       transition: 0.2s;
     }
     .settings-box .close-btn:hover { color: #b3d9ff; }
-
     .settings-box .training-form { display: flex; flex-direction: column; gap: 12px; }
     .settings-box .training-form .row { display: flex; gap: 12px; flex-wrap: wrap; }
     .settings-box .training-form .row .form-group { flex: 1; min-width: 120px; }
@@ -281,48 +414,18 @@
     .settings-box .result-block .exercises li::before { content: "✓"; color: #27ae60; font-weight: bold; }
     .settings-box .result-block .warning { margin-top: 10px; background: #2a1a1a; border: 1px solid #4a2a2a; padding: 8px; border-radius: 4px; color: #ccaaaa; font-size: 12px; }
 
-    /* Сообщение о необходимости настройки */
-    .setup-msg-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
-      justify-content: center;
-      align-items: center;
-      z-index: 2500;
-      backdrop-filter: blur(2px);
-      animation: fadeInOverlay 0.3s ease;
-    }
-    .setup-msg-overlay.active { display: flex; }
-    .setup-msg-box {
-      background: #0e121b;
-      border: 2px solid #2a4a6a;
-      border-radius: 8px;
-      padding: 28px 32px;
-      max-width: 420px;
-      width: 90%;
-      text-align: center;
-      box-shadow: 0 0 40px rgba(80,180,255,0.2), inset 0 0 12px 2px rgba(80,180,255,0.10);
-      animation: scaleIn 0.25s ease;
-    }
-    .setup-msg-box h2 { color: #d4af37; font-weight: 400; letter-spacing: 1px; font-size: 22px; margin-bottom: 12px; }
-    .setup-msg-box p { color: #b3d9ff; font-size: 16px; line-height: 1.5; }
-    .setup-msg-box .btn-accept-setup {
-      background: #1a2a3e; border: 1px solid #4a9eff; color: #b3d9ff; padding: 10px 40px; border-radius: 4px; font-family: inherit; font-size: 16px; cursor: pointer; transition: 0.25s; margin-top: 16px;
-    }
-    .setup-msg-box .btn-accept-setup:hover { background: #1f3a5a; border-color: #7ac0ff; }
-
     @media (max-width: 600px) {
       .stat-table .stat-name { font-size: 1.1em; min-width: 70px; }
       .header .title { font-size: 18px; }
       .tab-btn { font-size: 11px; padding: 4px 6px; }
       .profile-row { flex-direction: column; align-items: stretch; }
       .profile-photo { max-width: 100%; aspect-ratio: 3/2; }
+      .title-select-box { padding: 16px; }
       .settings-box { padding: 16px; }
       .settings-box .training-form .row { flex-direction: column; }
       .header .info { gap: 8px; }
       .header .btn-settings { font-size: 12px; padding: 2px 10px; }
+      .profile-info .field .btn-select-title { font-size: 11px; padding: 1px 10px; }
     }
   </style>
 </head>
@@ -338,12 +441,21 @@
   </div>
 </div>
 
-<!-- Оверлей сообщения о настройке -->
+<!-- Сообщение о настройке -->
 <div class="setup-msg-overlay" id="setupMsgOverlay">
   <div class="setup-msg-box">
     <h2>⚙️ Настройка системы</h2>
     <p>Игрок, перед началом работы системы, её необходимо настроить.<br>Нажмите кнопку <strong>«Настройки»</strong> в правом верхнем углу и настройте систему.</p>
     <button class="btn-accept-setup" id="setupMsgAccept">Понятно</button>
+  </div>
+</div>
+
+<!-- Модальное окно выбора титулов -->
+<div class="title-select-overlay" id="titleSelectOverlay">
+  <div class="title-select-box">
+    <button class="close-btn" id="titleSelectCloseBtn">&times;</button>
+    <h2>🏅 Выбор титула</h2>
+    <div class="title-grid" id="titleSelectGrid"></div>
   </div>
 </div>
 
@@ -394,7 +506,11 @@
     <div class="profile-info">
       <div class="field"><label>Имя</label><input type="text" id="userNameInput" placeholder="Ваше имя" value=""></div>
       <div class="field"><label>Возраст</label><input type="number" id="userAgeInput" placeholder="Ваш возраст" value="" min="1" max="120"></div>
-      <div class="field"><label>Титул</label><span class="title-value" id="titleDisplay">Охотник E-ранга</span></div>
+      <div class="field">
+        <label>Титул</label>
+        <span class="title-value" id="titleDisplay">Охотник E-ранга</span>
+        <button class="btn-select-title" id="btnSelectTitle">Выбрать</button>
+      </div>
     </div>
     <div class="profile-photo" id="photoContainer">
       <img id="userPhotoImg" src="" alt="Фото" style="display:none;">
@@ -403,11 +519,10 @@
     </div>
   </div>
 
-  <!-- Вкладки (без "Тренировки") -->
+  <!-- Вкладки (без "Титулы") -->
   <div class="tabs">
     <button class="tab-btn active" data-tab="stats">📈 Хар-ки</button>
     <button class="tab-btn" data-tab="quests">📋 Задания</button>
-    <button class="tab-btn" data-tab="titles">🏅 Титулы</button>
     <button class="tab-btn" data-tab="achievements">🏆 Достижения</button>
   </div>
 
@@ -438,11 +553,6 @@
       </div>
       <div id="personalTaskList"></div>
     </div>
-  </div>
-
-  <!-- Титулы -->
-  <div class="tab-content" id="tab-titles">
-    <div class="title-grid" id="titleGrid"></div>
   </div>
 
   <!-- Достижения -->
@@ -504,7 +614,7 @@
     },
     unlockedAchievements: [],
     justUnlocked: [],
-    setupShown: false // флаг для сообщения о настройке
+    setupShown: false
   };
 
   function loadData() {
@@ -659,7 +769,6 @@
     streakEl.textContent = hasStreak ? '🔥 Стрик 7+: АКТИВНО' : '🔥 Стрик 7+: нет';
     streakEl.className = 'badge' + (hasStreak ? ' active' : '');
 
-    renderTitles(data);
     renderAchievements(data);
     saveData(data);
   }
@@ -776,7 +885,7 @@
     });
   }
 
-  // ── Физические квесты (из customPhysItems) ──
+  // ── Физические квесты ──
   function renderPhysQuests(data) {
     const container = document.getElementById('physQuestList');
     container.innerHTML = '';
@@ -829,7 +938,7 @@
     });
   }
 
-  // ── Стандартные ментальные и социальные квесты ──
+  // ── Ментальные и социальные квесты ──
   function renderQuest(type, checks, items) {
     const containerId = type === 'ment' ? 'mentQuestList' : 'socQuestList';
     const container = document.getElementById(containerId);
@@ -947,47 +1056,6 @@
     renderAll(data);
     input.value = '';
     soundClick();
-  }
-
-  // ── Титулы ──
-  function renderTitles(data) {
-    const container = document.getElementById('titleGrid');
-    container.innerHTML = '';
-    const avg = avgAllMain(data);
-    const titles = [
-      { name: 'Охотник E-ранга', need: 0 },
-      { name: 'Охотник D-ранга', need: 15 },
-      { name: 'Охотник C-ранга', need: 25 },
-      { name: 'Охотник B-ранга', need: 40 },
-      { name: 'Охотник A-ранга', need: 60 },
-      { name: 'Охотник S-ранга', need: 80 }
-    ];
-    const selected = data.selectedTitle || 'Охотник E-ранга';
-    titles.forEach(t => {
-      const unlocked = avg >= t.need;
-      const isSelected = (selected === t.name);
-      const div = document.createElement('div');
-      div.className = 'title-card' + (unlocked ? '' : ' locked') + (isSelected ? ' selected' : '');
-      div.innerHTML = `
-        <span class="title-name">${t.name}</span>
-        <span class="title-status">${unlocked ? '✅ Открыт' : '🔒 Заблокирован'}</span>
-        <button class="title-select-btn" ${unlocked ? '' : 'disabled'} data-title="${t.name}">
-          ${isSelected ? '✓ Выбран' : 'Выбрать'}
-        </button>
-      `;
-      container.appendChild(div);
-    });
-    container.querySelectorAll('.title-select-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        if (this.disabled) return;
-        const title = this.dataset.title;
-        const data = loadData();
-        data.selectedTitle = title;
-        saveData(data);
-        renderAll(data);
-        soundClick();
-      });
-    });
   }
 
   // ── Достижения ──
@@ -1126,7 +1194,6 @@
 
   function hideWelcome() {
     document.getElementById('welcomeOverlay').classList.add('hidden');
-    // После закрытия приветствия показываем сообщение о настройке (если ещё не показано)
     const data = loadData();
     if (!data.setupShown) {
       setTimeout(() => {
@@ -1135,7 +1202,6 @@
     }
   }
 
-  // ── Закрытие сообщения о настройке ──
   function hideSetupMsg() {
     document.getElementById('setupMsgOverlay').classList.remove('active');
     const data = loadData();
@@ -1144,7 +1210,63 @@
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  МОДАЛЬНОЕ ОКНО НАСТРОЕК
+  //  ВЫБОР ТИТУЛА – МОДАЛЬНОЕ ОКНО
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function openTitleSelect() {
+    const data = loadData();
+    const avg = avgAllMain(data);
+    const titles = [
+      { name: 'Охотник E-ранга', need: 0 },
+      { name: 'Охотник D-ранга', need: 15 },
+      { name: 'Охотник C-ранга', need: 25 },
+      { name: 'Охотник B-ранга', need: 40 },
+      { name: 'Охотник A-ранга', need: 60 },
+      { name: 'Охотник S-ранга', need: 80 }
+    ];
+    const selected = data.selectedTitle || 'Охотник E-ранга';
+
+    const grid = document.getElementById('titleSelectGrid');
+    grid.innerHTML = '';
+    titles.forEach(t => {
+      const unlocked = avg >= t.need;
+      const isSelected = (selected === t.name);
+      const div = document.createElement('div');
+      div.className = 'title-item' + (unlocked ? '' : ' locked') + (isSelected ? ' selected' : '');
+      div.innerHTML = `
+        <span class="title-name">${t.name}</span>
+        <span class="title-status">${unlocked ? '✅ Открыт' : '🔒 Заблокирован'}</span>
+        <button class="title-select-btn" ${unlocked ? '' : 'disabled'} data-title="${t.name}">
+          ${isSelected ? '✓ Выбран' : 'Выбрать'}
+        </button>
+      `;
+      grid.appendChild(div);
+    });
+
+    grid.querySelectorAll('.title-select-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (this.disabled) return;
+        const title = this.dataset.title;
+        const data = loadData();
+        data.selectedTitle = title;
+        saveData(data);
+        renderAll(data);
+        // Обновляем отображение в модалке
+        openTitleSelect(); // перерисовываем список
+        soundClick();
+      });
+    });
+
+    document.getElementById('titleSelectOverlay').classList.add('active');
+    soundClick();
+  }
+
+  function closeTitleSelect() {
+    document.getElementById('titleSelectOverlay').classList.remove('active');
+    soundClick();
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  НАСТРОЙКИ – МОДАЛЬНОЕ ОКНО
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function openSettings() {
     document.getElementById('settingsOverlay').classList.add('active');
@@ -1157,7 +1279,7 @@
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  ГЕНЕРАЦИЯ ПЛАНА (из модального окна)
+  //  ГЕНЕРАЦИЯ ПЛАНА
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function generatePlan() {
     const weight = parseFloat(document.getElementById('weight').value);
@@ -1179,7 +1301,6 @@
     data.goal = goal;
     data.fitnessLevel = level;
 
-    // Генерация упражнений (упрощённый пример)
     let exercises = [];
     if (goal === 'похудение') {
       exercises = ['Ходьба 30 мин', 'Приседания 3×15', 'Отжимания 3×10', 'Планка 3×30 сек', 'Растяжка'];
@@ -1196,7 +1317,6 @@
     saveData(data);
     renderAll(data);
 
-    // Показываем результат в модальном окне
     const resultBlock = document.getElementById('resultBlock');
     resultBlock.classList.add('active');
     document.getElementById('planType').textContent = 'Ваш план';
@@ -1233,7 +1353,6 @@
     const contents = {
       stats: document.getElementById('tab-stats'),
       quests: document.getElementById('tab-quests'),
-      titles: document.getElementById('tab-titles'),
       achievements: document.getElementById('tab-achievements')
     };
     tabs.forEach(btn => {
@@ -1363,7 +1482,7 @@
   setupProfileEditing();
   setupSettingsAutoSave();
 
-  // Обработчики для кнопок
+  // Обработчики
   document.getElementById('welcomeAccept').addEventListener('click', hideWelcome);
   document.getElementById('setupMsgAccept').addEventListener('click', hideSetupMsg);
   document.getElementById('btnSettings').addEventListener('click', openSettings);
@@ -1374,7 +1493,14 @@
   document.getElementById('btnResetFull').addEventListener('click', resetFull);
   document.querySelector('.header .title').addEventListener('dblclick', resetFull);
 
-  // Закрытие модального окна по клику на оверлей
+  // Кнопка выбора титула
+  document.getElementById('btnSelectTitle').addEventListener('click', openTitleSelect);
+  document.getElementById('titleSelectCloseBtn').addEventListener('click', closeTitleSelect);
+  document.getElementById('titleSelectOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeTitleSelect();
+  });
+
+  // Закрытие настроек по клику на оверлей
   document.getElementById('settingsOverlay').addEventListener('click', function(e) {
     if (e.target === this) closeSettings();
   });
