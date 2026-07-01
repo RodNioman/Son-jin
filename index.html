@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Система Охотника — Вкладки</title>
+  <title>Система Охотника — Профиль</title>
   <style>
     * {
       margin: 0;
@@ -62,25 +62,116 @@
       color: #b3d9ff;
     }
 
-    /* ── Вкладки ── */
+    /* ── БЛОК ПРОФИЛЯ ── */
+    .profile-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 20px;
+      padding: 12px 14px;
+      background: #0e131e;
+      border: 1px solid #1a2332;
+      border-radius: 4px;
+      box-shadow: inset 0 0 4px 1px rgba(80, 180, 255, 0.08);
+    }
+    .profile-info {
+      flex: 2;
+      min-width: 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .profile-info .field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+    }
+    .profile-info .field label {
+      color: #6a8aaa;
+      min-width: 60px;
+    }
+    .profile-info .field input {
+      background: #1a2332;
+      border: 1px solid #2a3a4a;
+      color: #b3d9ff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 15px;
+      flex: 1;
+      min-width: 80px;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .profile-info .field input:focus {
+      border-color: #4a9eff;
+    }
+    .profile-info .field .title-value {
+      color: #d4af37;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .profile-photo {
+      flex: 1;
+      min-width: 120px;
+      max-width: 160px;
+      aspect-ratio: 3 / 4;
+      background: #1a2332;
+      border: 1px solid #2a3a4a;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+      transition: border 0.2s;
+    }
+    .profile-photo:hover {
+      border-color: #4a9eff;
+    }
+    .profile-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .profile-photo .placeholder {
+      color: #4a5a6a;
+      font-size: 13px;
+      text-align: center;
+      padding: 8px;
+      pointer-events: none;
+    }
+    .profile-photo input[type="file"] {
+      display: none;
+    }
+
+    /* ── Вкладки (все в одну строку) ── */
     .tabs {
       display: flex;
-      gap: 4px;
+      gap: 2px;
       margin-bottom: 16px;
       border-bottom: 1px solid #1a2332;
+      flex-wrap: nowrap;
+      overflow-x: auto;
     }
     .tab-btn {
       background: transparent;
       border: none;
       color: #6a8aaa;
-      padding: 8px 20px;
+      padding: 6px 12px;
       font-family: inherit;
-      font-size: 16px;
+      font-size: 14px;
       cursor: pointer;
       transition: 0.2s;
       border-bottom: 2px solid transparent;
       font-weight: 600;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .tab-btn:hover {
       color: #b3d9ff;
@@ -116,7 +207,6 @@
       box-shadow: inset 0 0 6px 2px rgba(80, 180, 255, 0.12);
     }
 
-    /* ── Таблица статов ── */
     .stat-table {
       width: 100%;
       border-collapse: collapse;
@@ -175,7 +265,6 @@
       justify-content: space-between;
     }
 
-    /* ── Паутина (radar chart) ── */
     .radar-wrapper {
       display: flex;
       justify-content: center;
@@ -189,22 +278,7 @@
       aspect-ratio: 1/1;
     }
 
-    /* ── Титул ── */
-    .title-row {
-      text-align: center;
-      font-size: 18px;
-      color: #8ab8ff;
-      margin: 8px 0 4px;
-      letter-spacing: 1px;
-      border-top: 1px solid #1a2332;
-      padding-top: 12px;
-    }
-    .title-row span {
-      color: #d4af37;
-      font-weight: 700;
-    }
-
-    /* ── Карточки квестов ── */
+    /* ── Квесты ── */
     .card {
       background: #0e131e;
       border: 1px solid #1a2332;
@@ -261,7 +335,13 @@
       border: 1px solid #4a9eff;
     }
 
-    /* ── Контейнер кнопок ── */
+    .badge-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 12px 0 8px;
+    }
+
     .btn-group {
       display: flex;
       gap: 12px;
@@ -296,7 +376,61 @@
       color: #ccaaaa;
     }
 
-    /* ── Ачивки ── */
+    /* ── Титулы ── */
+    .title-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .title-card {
+      background: #0e131e;
+      border: 1px solid #1a2332;
+      border-radius: 4px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: border 0.2s, opacity 0.2s;
+    }
+    .title-card.locked {
+      opacity: 0.35;
+      border-color: #2a2a3a;
+    }
+    .title-card .title-name {
+      color: #d4af37;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .title-card .title-status {
+      font-size: 12px;
+      color: #6a8aaa;
+    }
+    .title-card .title-select-btn {
+      background: #1a2a3e;
+      border: 1px solid #2a4a6a;
+      color: #b3d9ff;
+      padding: 2px 12px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .title-card .title-select-btn:hover:not(:disabled) {
+      background: #1f3a5a;
+      border-color: #4a9eff;
+    }
+    .title-card .title-select-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .title-card.selected {
+      border-color: #4a9eff;
+      box-shadow: 0 0 8px rgba(74, 158, 255, 0.3);
+    }
+
+    /* ── Достижения ── */
     .achievement {
       background: #0e131e;
       border-radius: 4px;
@@ -428,8 +562,16 @@
         font-size: 18px;
       }
       .tab-btn {
-        font-size: 14px;
-        padding: 6px 12px;
+        font-size: 12px;
+        padding: 4px 8px;
+      }
+      .profile-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .profile-photo {
+        max-width: 100%;
+        aspect-ratio: 3 / 2;
       }
       .welcome-box {
         padding: 20px;
@@ -444,6 +586,9 @@
       .btn-reset {
         flex: 1;
       }
+      .title-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -452,8 +597,8 @@
 <!-- Оверлей сообщений -->
 <div class="welcome-overlay hidden" id="welcomeOverlay">
   <div class="welcome-box">
-    <h2 id="welcomeTitle">⚔️ ДОБРО ПОЖАЛОВАТЬ</h2>
-    <div class="message" id="welcomeMessage">Охотник, ты пробудился.<br>Твой путь начинается сегодня.</div>
+    <h2 id="welcomeTitle"></h2>
+    <div class="message" id="welcomeMessage"></div>
     <p>Дней в системе: <span class="highlight" id="welcomeDays">1</span></p>
     <button class="btn-accept" id="welcomeAccept">ПРИНЯТЬ</button>
   </div>
@@ -471,11 +616,35 @@
     </div>
   </div>
 
-  <!-- Вкладки -->
+  <!-- Блок профиля -->
+  <div class="profile-row">
+    <div class="profile-info">
+      <div class="field">
+        <label>Имя</label>
+        <input type="text" id="userNameInput" placeholder="Ваше имя" value="">
+      </div>
+      <div class="field">
+        <label>Возраст</label>
+        <input type="number" id="userAgeInput" placeholder="Ваш возраст" value="" min="1" max="120">
+      </div>
+      <div class="field">
+        <label>Титул</label>
+        <span class="title-value" id="titleDisplay">Охотник E-ранга</span>
+      </div>
+    </div>
+    <div class="profile-photo" id="photoContainer">
+      <img id="userPhotoImg" src="" alt="Фото" style="display:none;">
+      <span class="placeholder" id="photoPlaceholder">📷 Загрузить фото</span>
+      <input type="file" id="photoInput" accept="image/*">
+    </div>
+  </div>
+
+  <!-- Вкладки (4 штуки) -->
   <div class="tabs">
-    <button class="tab-btn active" data-tab="stats">📈 Характеристики</button>
+    <button class="tab-btn active" data-tab="stats">📈 Хар-ки</button>
     <button class="tab-btn" data-tab="quests">📋 Задания</button>
-    <button class="tab-btn" data-tab="achievements">🏆 Ачивки</button>
+    <button class="tab-btn" data-tab="titles">🏅 Титулы</button>
+    <button class="tab-btn" data-tab="achievements">🏆 Достижения</button>
   </div>
 
   <!-- Блок Характеристики -->
@@ -493,24 +662,9 @@
         </tbody>
       </table>
     </div>
-
-    <!-- Радар (паутина) -->
     <div class="radar-wrapper">
       <canvas id="radarCanvas" width="400" height="400"></canvas>
     </div>
-
-    <!-- Титул -->
-    <div class="title-row">
-      🏅 Титул: <span id="titleDisplay">Охотник E-ранга</span>
-    </div>
-
-    <!-- Бонусы -->
-    <div style="display:flex; gap:12px; flex-wrap:wrap; margin:12px 0 8px;">
-      <span class="badge" id="bonusTri">🌟 Триединство: нет</span>
-      <span class="badge" id="bonusStreak">🔥 Стрик 7+: нет</span>
-    </div>
-
-    <!-- Кнопка сброса -->
     <div class="btn-group">
       <button class="btn btn-reset" id="btnResetFull">🔄 Сброс</button>
     </div>
@@ -530,9 +684,20 @@
       <h3>🗣 Социальный</h3>
       <div id="socQuestList"></div>
     </div>
+    <div class="badge-group">
+      <span class="badge" id="bonusTri">🌟 Все сферы: нет</span>
+      <span class="badge" id="bonusStreak">🔥 Стрик 7+: нет</span>
+    </div>
   </div>
 
-  <!-- Блок Ачивки -->
+  <!-- Блок Титулы -->
+  <div class="tab-content" id="tab-titles">
+    <div class="title-grid" id="titleGrid">
+      <!-- генерируется скриптом -->
+    </div>
+  </div>
+
+  <!-- Блок Достижения -->
   <div class="tab-content" id="tab-achievements">
     <div id="achievementList"></div>
   </div>
@@ -578,6 +743,10 @@
     streak: 0,
     freePoints: 0,
     lastDate: '',
+    name: '',
+    age: '',
+    photo: '',
+    selectedTitle: 'Охотник E-ранга',
     stats: {
       STR: { level: 10, exp: 0 },
       AGI: { level: 10, exp: 0 },
@@ -632,21 +801,17 @@
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  ЗАВЕРШЕНИЕ ДНЯ (автоматическое)
+  //  ЗАВЕРШЕНИЕ ДНЯ
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function finishDay(data) {
-    // Начисляем EXP за выполненные квесты
     const allPhys = data.quests.phys.every(v=>v);
     const allMent = data.quests.ment.every(v=>v);
     const allSoc = data.quests.soc.every(v=>v);
     const tripleBonus = allPhys && allMent && allSoc;
     const anyComplete = allPhys || allMent || allSoc;
 
-    if (anyComplete) {
-      data.streak += 1;
-    } else {
-      data.streak = 0;
-    }
+    if (anyComplete) data.streak += 1;
+    else data.streak = 0;
 
     const rank = getRank(avgAllMain(data));
     const bonusMap = { E:15, D:20, C:25, B:30, A:35 };
@@ -672,7 +837,6 @@
       data.freePoints += 1;
     }
 
-    // Повышаем уровни
     const statKeys = ['STR','AGI','VIT','INT','CHA'];
     let leveled = false;
     statKeys.forEach(key => {
@@ -688,20 +852,17 @@
       data.freePoints += 3;
     }
 
-    // PER пассивно
     const intLv = data.stats.INT.level;
     const chaLv = data.stats.CHA.level;
     const bonusPer = Math.floor(data.day / 10) * 0.5;
     const newPer = Math.floor(10 + Math.floor(intLv / 10) + Math.floor(chaLv / 15) + bonusPer);
     if (newPer > data.stats.PER.level) data.stats.PER.level = newPer;
 
-    // Сброс чекбоксов
     data.quests.phys = [false,false,false,false,false];
     data.quests.ment = [false,false,false,false,false];
     data.quests.soc = [false,false,false,false,false];
     data.day += 1;
 
-    // Проверка ачивок
     const newUnlocks = checkAchievements(data);
     if (newUnlocks.length > 0) {
       soundAchievement();
@@ -714,29 +875,25 @@
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  ПРОВЕРКА НОВОГО ДНЯ (при загрузке)
+  //  ПРОВЕРКА НОВОГО ДНЯ
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function checkNewDay() {
     let data = loadData();
     const today = new Date().toDateString();
     const lastDate = data.lastDate || '';
 
-    // Первый запуск – просто сохраняем дату, не завершаем день
     if (lastDate === '') {
       data.lastDate = today;
       saveData(data);
-      // Показываем приветствие для дня 1
       showDailyMessage(1);
       return data;
     }
 
-    // Если дата изменилась – завершаем предыдущий день
     if (today !== lastDate) {
       data = finishDay(data);
       data.lastDate = today;
       saveData(data);
-      soundNewDay(); // звук нового дня
-      // Показываем сообщение для нового дня (если день 1-7)
+      soundNewDay();
       showDailyMessage(data.day);
     }
     return data;
@@ -754,24 +911,46 @@
     document.getElementById('expDisplay').textContent = Math.round(s.STR.exp + s.AGI.exp + s.VIT.exp + s.INT.exp + s.CHA.exp);
     document.getElementById('dayDisplay').textContent = data.day;
 
+    // Профиль
+    const nameInput = document.getElementById('userNameInput');
+    const ageInput = document.getElementById('userAgeInput');
+    if (nameInput.value !== data.name) nameInput.value = data.name || '';
+    if (ageInput.value !== data.age) ageInput.value = data.age || '';
+    // Отображаем выбранный титул
+    document.getElementById('titleDisplay').textContent = data.selectedTitle || 'Охотник E-ранга';
+    updatePhoto(data.photo);
+
     renderStatTable(data);
     renderRadar(data);
-    updateTitle(data);
     renderQuest('phys', data.quests.phys, getQuestList('phys', rank));
     renderQuest('ment', data.quests.ment, getQuestList('ment', rank));
     renderQuest('soc', data.quests.soc, getQuestList('soc', rank));
 
     const allDone = data.quests.phys.every(v=>v) && data.quests.ment.every(v=>v) && data.quests.soc.every(v=>v);
     const triEl = document.getElementById('bonusTri');
-    triEl.textContent = allDone ? '🌟 Триединство: АКТИВНО' : '🌟 Триединство: нет';
+    triEl.textContent = allDone ? '🌟 Все сферы: АКТИВНО' : '🌟 Все сферы: нет';
     triEl.className = 'badge' + (allDone ? ' active' : '');
     const streakEl = document.getElementById('bonusStreak');
     const hasStreak = data.streak >= 7;
     streakEl.textContent = hasStreak ? '🔥 Стрик 7+: АКТИВНО' : '🔥 Стрик 7+: нет';
     streakEl.className = 'badge' + (hasStreak ? ' active' : '');
 
+    renderTitles(data);
     renderAchievements(data);
     saveData(data);
+  }
+
+  function updatePhoto(base64) {
+    const img = document.getElementById('userPhotoImg');
+    const placeholder = document.getElementById('photoPlaceholder');
+    if (base64 && base64.length > 0) {
+      img.src = base64;
+      img.style.display = 'block';
+      placeholder.style.display = 'none';
+    } else {
+      img.style.display = 'none';
+      placeholder.style.display = 'block';
+    }
   }
 
   // ── Таблица характеристик ──
@@ -815,7 +994,7 @@
     });
   }
 
-  // ── Радар (паутина) ──
+  // ── Радар ──
   function renderRadar(data) {
     const canvas = document.getElementById('radarCanvas');
     const ctx = canvas.getContext('2d');
@@ -894,18 +1073,6 @@
     });
   }
 
-  // ── Титул ──
-  function updateTitle(data) {
-    const avg = avgAllMain(data);
-    let title = 'Охотник E-ранга';
-    if (avg >= 80) title = 'Охотник S-ранга';
-    else if (avg >= 60) title = 'Охотник A-ранга';
-    else if (avg >= 40) title = 'Охотник B-ранга';
-    else if (avg >= 25) title = 'Охотник C-ранга';
-    else if (avg >= 15) title = 'Охотник D-ранга';
-    document.getElementById('titleDisplay').textContent = title;
-  }
-
   // ── Квесты ──
   function renderQuest(type, checks, items) {
     const containerId = type === 'phys' ? 'physQuestList' : (type === 'ment' ? 'mentQuestList' : 'socQuestList');
@@ -970,7 +1137,52 @@
     return list;
   }
 
-  // ── Ачивки ──
+  // ── Титулы ──
+  function renderTitles(data) {
+    const container = document.getElementById('titleGrid');
+    container.innerHTML = '';
+    const avg = avgAllMain(data);
+    const titles = [
+      { name: 'Охотник E-ранга', need: 0 },
+      { name: 'Охотник D-ранга', need: 15 },
+      { name: 'Охотник C-ранга', need: 25 },
+      { name: 'Охотник B-ранга', need: 40 },
+      { name: 'Охотник A-ранга', need: 60 },
+      { name: 'Охотник S-ранга', need: 80 }
+    ];
+
+    const selected = data.selectedTitle || 'Охотник E-ранга';
+
+    titles.forEach(t => {
+      const unlocked = avg >= t.need;
+      const isSelected = (selected === t.name);
+      const div = document.createElement('div');
+      div.className = 'title-card' + (unlocked ? '' : ' locked') + (isSelected ? ' selected' : '');
+      div.innerHTML = `
+        <span class="title-name">${t.name}</span>
+        <span class="title-status">${unlocked ? '✅ Открыт' : '🔒 Заблокирован'}</span>
+        <button class="title-select-btn" ${unlocked ? '' : 'disabled'} data-title="${t.name}">
+          ${isSelected ? '✓ Выбран' : 'Выбрать'}
+        </button>
+      `;
+      container.appendChild(div);
+    });
+
+    // Обработчики для кнопок "Выбрать"
+    container.querySelectorAll('.title-select-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (this.disabled) return;
+        const title = this.dataset.title;
+        const data = loadData();
+        data.selectedTitle = title;
+        saveData(data);
+        renderAll(data);
+        soundClick();
+      });
+    });
+  }
+
+  // ── Достижения ──
   function getAchievementsList() {
     return [
       { name: 'Первый шаг', bonus: '+5 EXP ко всем', condition: 'Выполнить любой квест 1 раз' },
@@ -1028,7 +1240,6 @@
     });
   }
 
-  // ── Проверка ачивок (используется в finishDay) ──
   function checkAchievements(data) {
     const unlocked = data.unlockedAchievements || [];
     const s = data.stats;
@@ -1077,7 +1288,7 @@
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  ЕЖЕДНЕВНЫЕ СООБЩЕНИЯ (первые 7 дней)
+  //  ЕЖЕДНЕВНЫЕ СООБЩЕНИЯ (без "Мудрость дня" после 1-го)
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const dailyMessages = {
     1: {
@@ -1085,27 +1296,27 @@
       text: 'Охотник, ты пробудился.<br>Твой путь начинается сегодня.'
     },
     2: {
-      title: '📜 МУДРОСТЬ ДНЯ',
+      title: '',
       text: '«Если я сдамся из-за того, что испугался, то не смогу стать сильнее.»'
     },
     3: {
-      title: '📜 МУДРОСТЬ ДНЯ',
+      title: '',
       text: '«Если боль не убьет меня, она лишь сделает меня сильнее.»'
     },
     4: {
-      title: '📜 МУДРОСТЬ ДНЯ',
+      title: '',
       text: '«Когда ты смотришь в бездну, бездна смотрит на тебя.»'
     },
     5: {
-      title: '📜 МУДРОСТЬ ДНЯ',
+      title: '',
       text: '«Приходит осень, приходит зима, а следом весна. Во всем есть начало и конец, и за концом всегда следует новое начало.»'
     },
     6: {
-      title: '📜 МУДРОСТЬ ДНЯ',
+      title: '',
       text: '«Система хочет, чтобы я жил.»'
     },
     7: {
-      title: '📜 МУДРОСТЬ ДНЯ',
+      title: '',
       text: '«Система использует меня, а я использую систему.»'
     }
   };
@@ -1138,6 +1349,7 @@
     const contents = {
       stats: document.getElementById('tab-stats'),
       quests: document.getElementById('tab-quests'),
+      titles: document.getElementById('tab-titles'),
       achievements: document.getElementById('tab-achievements')
     };
 
@@ -1173,20 +1385,90 @@
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  ФОТО – ЗАГРУЗКА
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function setupPhotoUpload() {
+    const container = document.getElementById('photoContainer');
+    const input = document.getElementById('photoInput');
+
+    container.addEventListener('click', function(e) {
+      if (e.target.tagName !== 'IMG') {
+        input.click();
+      }
+    });
+
+    input.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        let base64 = ev.target.result;
+        compressImage(base64, function(compressed) {
+          const data = loadData();
+          data.photo = compressed;
+          saveData(data);
+          updatePhoto(compressed);
+          soundClick();
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function compressImage(base64, callback) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      const maxSize = 400;
+      if (w > maxSize || h > maxSize) {
+        const ratio = Math.min(maxSize / w, maxSize / h);
+        w = Math.round(w * ratio);
+        h = Math.round(h * ratio);
+      }
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      const compressed = canvas.toDataURL('image/jpeg', 0.7);
+      callback(compressed);
+    };
+    img.src = base64;
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  ИМЯ/ВОЗРАСТ – СОХРАНЕНИЕ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function setupProfileEditing() {
+    const nameInput = document.getElementById('userNameInput');
+    const ageInput = document.getElementById('userAgeInput');
+
+    nameInput.addEventListener('change', function() {
+      const data = loadData();
+      data.name = this.value.trim();
+      saveData(data);
+      soundClick();
+    });
+
+    ageInput.addEventListener('change', function() {
+      const data = loadData();
+      data.age = this.value.trim();
+      saveData(data);
+      soundClick();
+    });
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   //  СТАРТ
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // Проверяем новый день (автоматически завершает предыдущий, если надо)
   let appData = checkNewDay();
   renderAll(appData);
   setupTabs();
+  setupPhotoUpload();
+  setupProfileEditing();
 
-  // Кнопка "Принять" в оверлее
   document.getElementById('welcomeAccept').addEventListener('click', hideWelcome);
-
-  // Кнопка сброса
   document.getElementById('btnResetFull').addEventListener('click', resetFull);
-
-  // Двойной клик по заголовку тоже вызывает сброс (запасной вариант)
   document.querySelector('.header .title').addEventListener('dblclick', resetFull);
 
   window.addEventListener('beforeunload', () => {
