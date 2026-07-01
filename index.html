@@ -92,6 +92,32 @@
       background: #1f3a5a;
       border-color: #4a9eff;
     }
+    .profile-info .field .achievement-last {
+      color: #7ac0ff;
+      font-weight: 500;
+      font-size: 15px;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .profile-info .field .btn-all-achievements {
+      background: #1a2a3e;
+      border: 1px solid #2a4a6a;
+      color: #b3d9ff;
+      padding: 2px 12px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    .profile-info .field .btn-all-achievements:hover {
+      background: #1f3a5a;
+      border-color: #4a9eff;
+    }
+
     .profile-photo {
       flex: 1; min-width: 120px; max-width: 160px; aspect-ratio: 3/4;
       background: #1a2332; border: 1px solid #2a3a4a; border-radius: 4px;
@@ -179,7 +205,7 @@
     .btn-reset { background: #2a1a1a; border-color: #4a2a2a; color: #aa8a8a; flex: 0.6; }
     .btn-reset:hover { background: #3a1a1a; border-color: #6a3a3a; color: #ccaaaa; }
 
-    /* Достижения */
+    /* Достижения (вкладка) */
     .achievement { background: #0e131e; border-radius: 4px; padding: 6px 12px; margin: 3px 0; font-size: 13px; display: flex; justify-content: space-between; border-left: 2px solid #1f3a5a; position: relative; cursor: default; box-shadow: inset 0 0 2px rgba(80,180,255,0.05); }
     .achievement.locked { opacity: 0.3; border-left-color: #2a2a3a; }
     .achievement.locked:hover { opacity: 0.7; }
@@ -332,6 +358,86 @@
       box-shadow: 0 0 8px rgba(74,158,255,0.3);
     }
 
+    /* Модальное окно всех достижений */
+    .achievements-all-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 3000;
+      backdrop-filter: blur(3px);
+      animation: fadeInOverlay 0.3s ease;
+    }
+    .achievements-all-overlay.active { display: flex; }
+    .achievements-all-box {
+      background: #0e121b;
+      border: 2px solid #2a4a6a;
+      border-radius: 8px;
+      padding: 20px 24px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 0 40px rgba(80,180,255,0.2), inset 0 0 12px 2px rgba(80,180,255,0.10);
+      animation: scaleIn 0.25s ease;
+    }
+    .achievements-all-box h2 {
+      color: #8ab8ff;
+      font-weight: 400;
+      letter-spacing: 1px;
+      font-size: 22px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .achievements-all-box .close-btn {
+      float: right;
+      background: transparent;
+      border: none;
+      color: #6a8aaa;
+      font-size: 24px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .achievements-all-box .close-btn:hover { color: #b3d9ff; }
+    .achievements-all-box .ach-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .achievements-all-box .ach-item {
+      background: #0e131e;
+      border: 1px solid #1a2332;
+      border-radius: 4px;
+      padding: 6px 12px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+    }
+    .achievements-all-box .ach-item.locked {
+      opacity: 0.35;
+      border-color: #2a2a3a;
+    }
+    .achievements-all-box .ach-item .ach-name {
+      color: #b3d9ff;
+    }
+    .achievements-all-box .ach-item .ach-status {
+      color: #6a8aaa;
+      font-size: 12px;
+    }
+    .achievements-all-box .ach-item .ach-bonus {
+      color: #7a9ec8;
+      font-size: 12px;
+    }
+    .achievements-all-box .ach-item .ach-condition {
+      color: #4a6a8a;
+      font-size: 11px;
+      flex-basis: 100%;
+      margin-top: 2px;
+    }
+
     /* Стили для настроек (модальное окно) */
     .settings-overlay {
       display: none;
@@ -426,6 +532,8 @@
       .header .info { gap: 8px; }
       .header .btn-settings { font-size: 12px; padding: 2px 10px; }
       .profile-info .field .btn-select-title { font-size: 11px; padding: 1px 10px; }
+      .profile-info .field .btn-all-achievements { font-size: 11px; padding: 1px 10px; }
+      .achievements-all-box { padding: 16px; }
     }
   </style>
 </head>
@@ -456,6 +564,15 @@
     <button class="close-btn" id="titleSelectCloseBtn">&times;</button>
     <h2>🏅 Выбор титула</h2>
     <div class="title-grid" id="titleSelectGrid"></div>
+  </div>
+</div>
+
+<!-- Модальное окно всех достижений -->
+<div class="achievements-all-overlay" id="achievementsAllOverlay">
+  <div class="achievements-all-box">
+    <button class="close-btn" id="achievementsAllCloseBtn">&times;</button>
+    <h2>🏆 Все достижения</h2>
+    <div class="ach-list" id="achievementsAllList"></div>
   </div>
 </div>
 
@@ -511,6 +628,11 @@
         <span class="title-value" id="titleDisplay">Охотник E-ранга</span>
         <button class="btn-select-title" id="btnSelectTitle">Выбрать</button>
       </div>
+      <div class="field">
+        <label>Последнее достижение</label>
+        <span class="achievement-last" id="lastAchievementDisplay">—</span>
+        <button class="btn-all-achievements" id="btnAllAchievements">Все</button>
+      </div>
     </div>
     <div class="profile-photo" id="photoContainer">
       <img id="userPhotoImg" src="" alt="Фото" style="display:none;">
@@ -519,7 +641,7 @@
     </div>
   </div>
 
-  <!-- Вкладки (без "Титулы") -->
+  <!-- Вкладки -->
   <div class="tabs">
     <button class="tab-btn active" data-tab="stats">📈 Хар-ки</button>
     <button class="tab-btn" data-tab="quests">📋 Задания</button>
@@ -568,7 +690,7 @@
 
 <script>
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  ЗВУКИ
+  //  ЗВУКИ (без изменений)
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   let audioCtx = null;
@@ -702,7 +824,12 @@
     data.day += 1;
 
     const newUnlocks = checkAchievements(data);
-    if (newUnlocks.length > 0) { soundAchievement(); data.justUnlocked = newUnlocks; } else { data.justUnlocked = []; }
+    if (newUnlocks.length > 0) {
+      soundAchievement();
+      data.justUnlocked = newUnlocks;
+    } else {
+      data.justUnlocked = [];
+    }
     return data;
   }
 
@@ -739,6 +866,10 @@
     if (ageInput.value !== data.age) ageInput.value = data.age || '';
     document.getElementById('titleDisplay').textContent = data.selectedTitle || 'Охотник E-ранга';
     updatePhoto(data.photo);
+
+    // Последнее достижение
+    const lastAch = getLastAchievement(data);
+    document.getElementById('lastAchievementDisplay').textContent = lastAch || '—';
 
     // Поля в настройках
     const weightInput = document.getElementById('weight');
@@ -781,6 +912,14 @@
     } else {
       img.style.display = 'none'; placeholder.style.display = 'block';
     }
+  }
+
+  function getLastAchievement(data) {
+    const unlocked = data.unlockedAchievements || [];
+    if (unlocked.length === 0) return null;
+    const list = getAchievementsList();
+    const lastIdx = unlocked[unlocked.length - 1];
+    return list[lastIdx] ? list[lastIdx].name : null;
   }
 
   // ── Таблица характеристик ──
@@ -1163,6 +1302,36 @@
     return newUnlocks;
   }
 
+  // ── Модальное окно всех достижений ──
+  function openAchievementsAll() {
+    const data = loadData();
+    const list = getAchievementsList();
+    const unlocked = data.unlockedAchievements || [];
+    const container = document.getElementById('achievementsAllList');
+    container.innerHTML = '';
+    list.forEach((ach, idx) => {
+      const isUnlocked = unlocked.includes(idx);
+      const div = document.createElement('div');
+      div.className = 'ach-item' + (isUnlocked ? '' : ' locked');
+      div.innerHTML = `
+        <div style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap;">
+          <span class="ach-name">${isUnlocked ? '✅' : '🔒'} ${ach.name}</span>
+          <span class="ach-status">${isUnlocked ? 'Открыто' : 'Закрыто'}</span>
+          <span class="ach-bonus">${ach.bonus}</span>
+          <span class="ach-condition">📋 ${ach.condition}</span>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+    document.getElementById('achievementsAllOverlay').classList.add('active');
+    soundClick();
+  }
+
+  function closeAchievementsAll() {
+    document.getElementById('achievementsAllOverlay').classList.remove('active');
+    soundClick();
+  }
+
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   //  ЕЖЕДНЕВНЫЕ СООБЩЕНИЯ
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1210,7 +1379,7 @@
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  ВЫБОР ТИТУЛА – МОДАЛЬНОЕ ОКНО
+  //  ВЫБОР ТИТУЛА
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function openTitleSelect() {
     const data = loadData();
@@ -1250,8 +1419,7 @@
         data.selectedTitle = title;
         saveData(data);
         renderAll(data);
-        // Обновляем отображение в модалке
-        openTitleSelect(); // перерисовываем список
+        openTitleSelect(); // обновить список
         soundClick();
       });
     });
@@ -1266,7 +1434,7 @@
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  НАСТРОЙКИ – МОДАЛЬНОЕ ОКНО
+  //  НАСТРОЙКИ
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function openSettings() {
     document.getElementById('settingsOverlay').classList.add('active');
@@ -1385,7 +1553,7 @@
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  ФОТО – ЗАГРУЗКА
+  //  ФОТО
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function setupPhotoUpload() {
     const container = document.getElementById('photoContainer');
@@ -1431,7 +1599,7 @@
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  ИМЯ/ВОЗРАСТ – СОХРАНЕНИЕ
+  //  ИМЯ/ВОЗРАСТ
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function setupProfileEditing() {
     const nameInput = document.getElementById('userNameInput');
@@ -1451,7 +1619,7 @@
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  АВТОСОХРАНЕНИЕ ДЛЯ ПОЛЕЙ НАСТРОЕК
+  //  АВТОСОХРАНЕНИЕ НАСТРОЕК
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function setupSettingsAutoSave() {
     const weightInput = document.getElementById('weight');
@@ -1493,11 +1661,18 @@
   document.getElementById('btnResetFull').addEventListener('click', resetFull);
   document.querySelector('.header .title').addEventListener('dblclick', resetFull);
 
-  // Кнопка выбора титула
+  // Выбор титула
   document.getElementById('btnSelectTitle').addEventListener('click', openTitleSelect);
   document.getElementById('titleSelectCloseBtn').addEventListener('click', closeTitleSelect);
   document.getElementById('titleSelectOverlay').addEventListener('click', function(e) {
     if (e.target === this) closeTitleSelect();
+  });
+
+  // Все достижения
+  document.getElementById('btnAllAchievements').addEventListener('click', openAchievementsAll);
+  document.getElementById('achievementsAllCloseBtn').addEventListener('click', closeAchievementsAll);
+  document.getElementById('achievementsAllOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeAchievementsAll();
   });
 
   // Закрытие настроек по клику на оверлей
