@@ -149,7 +149,7 @@
       display: none;
     }
 
-    /* ── Вкладки (все в одну строку) ── */
+    /* ── Вкладки ── */
     .tabs {
       display: flex;
       gap: 2px;
@@ -315,6 +315,10 @@
       height: 16px;
       cursor: pointer;
       flex-shrink: 0;
+    }
+    .quest-item input[type="checkbox"]:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
     .quest-item.done {
       text-decoration: line-through;
@@ -639,7 +643,7 @@
     </div>
   </div>
 
-  <!-- Вкладки (4 штуки) -->
+  <!-- Вкладки -->
   <div class="tabs">
     <button class="tab-btn active" data-tab="stats">📈 Хар-ки</button>
     <button class="tab-btn" data-tab="quests">📋 Задания</button>
@@ -647,7 +651,7 @@
     <button class="tab-btn" data-tab="achievements">🏆 Достижения</button>
   </div>
 
-  <!-- Блок Характеристики -->
+  <!-- Характеристики -->
   <div class="tab-content active" id="tab-stats">
     <div class="stat-card">
       <table class="stat-table">
@@ -657,9 +661,7 @@
             <th style="width:40%; text-align:right;">Значение</th>
           </tr>
         </thead>
-        <tbody id="statBody">
-          <!-- генерируется скриптом -->
-        </tbody>
+        <tbody id="statBody"></tbody>
       </table>
     </div>
     <div class="radar-wrapper">
@@ -670,7 +672,7 @@
     </div>
   </div>
 
-  <!-- Блок Задания -->
+  <!-- Задания -->
   <div class="tab-content" id="tab-quests">
     <div class="card">
       <h3>💪 Физический</h3>
@@ -690,14 +692,12 @@
     </div>
   </div>
 
-  <!-- Блок Титулы -->
+  <!-- Титулы -->
   <div class="tab-content" id="tab-titles">
-    <div class="title-grid" id="titleGrid">
-      <!-- генерируется скриптом -->
-    </div>
+    <div class="title-grid" id="titleGrid"></div>
   </div>
 
-  <!-- Блок Достижения -->
+  <!-- Достижения -->
   <div class="tab-content" id="tab-achievements">
     <div id="achievementList"></div>
   </div>
@@ -916,7 +916,6 @@
     const ageInput = document.getElementById('userAgeInput');
     if (nameInput.value !== data.name) nameInput.value = data.name || '';
     if (ageInput.value !== data.age) ageInput.value = data.age || '';
-    // Отображаем выбранный титул
     document.getElementById('titleDisplay').textContent = data.selectedTitle || 'Охотник E-ранга';
     updatePhoto(data.photo);
 
@@ -971,23 +970,14 @@
       const need = expToNext(st.level);
       const progress = Math.min(100, (st.exp / need) * 100);
       const tr1 = document.createElement('tr');
-      tr1.innerHTML = `
-        <td class="stat-name">${row.label}</td>
-        <td class="stat-value">${st.level}</td>
-      `;
+      tr1.innerHTML = `<td class="stat-name">${row.label}</td><td class="stat-value">${st.level}</td>`;
       tbody.appendChild(tr1);
-
       const tr2 = document.createElement('tr');
       tr2.className = 'stat-bar-row';
       tr2.innerHTML = `
         <td colspan="2">
-          <div class="stat-bar-wrap">
-            <div class="stat-bar" style="width: ${progress}%;"></div>
-          </div>
-          <div class="stat-exp">
-            <span>EXP: ${Math.round(st.exp)} / ${need}</span>
-            <span>${Math.round(progress)}%</span>
-          </div>
+          <div class="stat-bar-wrap"><div class="stat-bar" style="width: ${progress}%;"></div></div>
+          <div class="stat-exp"><span>EXP: ${Math.round(st.exp)} / ${need}</span><span>${Math.round(progress)}%</span></div>
         </td>
       `;
       tbody.appendChild(tr2);
@@ -1000,14 +990,12 @@
     const ctx = canvas.getContext('2d');
     const w = canvas.width, h = canvas.height;
     const cx = w/2, cy = h/2, r = Math.min(w, h) * 0.38;
-
     ctx.clearRect(0, 0, w, h);
 
     const stats = data.stats;
     const keys = ['STR', 'VIT', 'AGI', 'INT', 'PER', 'CHA'];
     const values = keys.map(k => Math.min(100, stats[k].level));
     const labels = ['Сила', 'Жизнь', 'Ловк.', 'Интел.', 'Воспр.', 'Харизма'];
-
     const angles = keys.map((_, i) => (i / keys.length) * 2 * Math.PI - Math.PI/2);
     ctx.strokeStyle = '#2a3a4a';
     ctx.lineWidth = 1;
@@ -1073,7 +1061,7 @@
     });
   }
 
-  // ── Квесты ──
+  // ── Квесты с блокировкой после отметки ──
   function renderQuest(type, checks, items) {
     const containerId = type === 'phys' ? 'physQuestList' : (type === 'ment' ? 'mentQuestList' : 'socQuestList');
     const container = document.getElementById(containerId);
@@ -1082,21 +1070,37 @@
       const checked = checks[idx] || false;
       const div = document.createElement('div');
       div.className = 'quest-item' + (checked ? ' done' : '');
-      div.innerHTML = `
-        <input type="checkbox" ${checked ? 'checked' : ''} data-type="${type}" data-idx="${idx}">
-        <span>${text}</span>
-      `;
+      const inp = document.createElement('input');
+      inp.type = 'checkbox';
+      inp.checked = checked;
+      inp.dataset.type = type;
+      inp.dataset.idx = idx;
+      // Блокируем, если уже отмечено
+      if (checked) inp.disabled = true;
+      const span = document.createElement('span');
+      span.textContent = text;
+      div.appendChild(inp);
+      div.appendChild(span);
       container.appendChild(div);
     });
+
     container.querySelectorAll('input[type="checkbox"]').forEach(inp => {
       inp.addEventListener('change', function() {
-        soundClick();
-        const type = this.dataset.type;
-        const idx = parseInt(this.dataset.idx);
-        const data = loadData();
-        data.quests[type][idx] = this.checked;
-        saveData(data);
-        renderAll(data);
+        // Если чекбокс стал отмеченным – блокируем его навсегда
+        if (this.checked) {
+          this.disabled = true;
+          soundClick();
+          const type = this.dataset.type;
+          const idx = parseInt(this.dataset.idx);
+          const data = loadData();
+          data.quests[type][idx] = true;
+          saveData(data);
+          renderAll(data);
+        } else {
+          // Если вдруг попытались снять галочку (но мы её заблокировали, так что этот код не сработает)
+          // На всякий случай восстанавливаем состояние
+          this.checked = true;
+        }
       });
     });
   }
@@ -1150,7 +1154,6 @@
       { name: 'Охотник A-ранга', need: 60 },
       { name: 'Охотник S-ранга', need: 80 }
     ];
-
     const selected = data.selectedTitle || 'Охотник E-ранга';
 
     titles.forEach(t => {
@@ -1168,7 +1171,6 @@
       container.appendChild(div);
     });
 
-    // Обработчики для кнопок "Выбрать"
     container.querySelectorAll('.title-select-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         if (this.disabled) return;
@@ -1288,37 +1290,16 @@
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  ЕЖЕДНЕВНЫЕ СООБЩЕНИЯ (без "Мудрость дня" после 1-го)
+  //  ЕЖЕДНЕВНЫЕ СООБЩЕНИЯ
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const dailyMessages = {
-    1: {
-      title: '⚔️ ДОБРО ПОЖАЛОВАТЬ',
-      text: 'Охотник, ты пробудился.<br>Твой путь начинается сегодня.'
-    },
-    2: {
-      title: '',
-      text: '«Если я сдамся из-за того, что испугался, то не смогу стать сильнее.»'
-    },
-    3: {
-      title: '',
-      text: '«Если боль не убьет меня, она лишь сделает меня сильнее.»'
-    },
-    4: {
-      title: '',
-      text: '«Когда ты смотришь в бездну, бездна смотрит на тебя.»'
-    },
-    5: {
-      title: '',
-      text: '«Приходит осень, приходит зима, а следом весна. Во всем есть начало и конец, и за концом всегда следует новое начало.»'
-    },
-    6: {
-      title: '',
-      text: '«Система хочет, чтобы я жил.»'
-    },
-    7: {
-      title: '',
-      text: '«Система использует меня, а я использую систему.»'
-    }
+    1: { title: '⚔️ ДОБРО ПОЖАЛОВАТЬ', text: 'Охотник, ты пробудился.<br>Твой путь начинается сегодня.' },
+    2: { title: '', text: '«Если я сдамся из-за того, что испугался, то не смогу стать сильнее.»' },
+    3: { title: '', text: '«Если боль не убьет меня, она лишь сделает меня сильнее.»' },
+    4: { title: '', text: '«Когда ты смотришь в бездну, бездна смотрит на тебя.»' },
+    5: { title: '', text: '«Приходит осень, приходит зима, а следом весна. Во всем есть начало и конец, и за концом всегда следует новое начало.»' },
+    6: { title: '', text: '«Система хочет, чтобы я жил.»' },
+    7: { title: '', text: '«Система использует меня, а я использую систему.»' }
   };
 
   function showDailyMessage(day) {
@@ -1352,7 +1333,6 @@
       titles: document.getElementById('tab-titles'),
       achievements: document.getElementById('tab-achievements')
     };
-
     tabs.forEach(btn => {
       btn.addEventListener('click', function() {
         tabs.forEach(b => b.classList.remove('active'));
@@ -1377,9 +1357,7 @@
     if (confirm('Сбросить весь прогресс (характеристики, дни, ачивки)?')) {
       soundClick();
       localStorage.removeItem('hunterSystemData');
-      for (let i = 1; i <= 7; i++) {
-        sessionStorage.removeItem('dailyMsg_' + i);
-      }
+      for (let i = 1; i <= 7; i++) sessionStorage.removeItem('dailyMsg_' + i);
       location.reload();
     }
   }
@@ -1390,20 +1368,15 @@
   function setupPhotoUpload() {
     const container = document.getElementById('photoContainer');
     const input = document.getElementById('photoInput');
-
     container.addEventListener('click', function(e) {
-      if (e.target.tagName !== 'IMG') {
-        input.click();
-      }
+      if (e.target.tagName !== 'IMG') input.click();
     });
-
     input.addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(ev) {
-        let base64 = ev.target.result;
-        compressImage(base64, function(compressed) {
+        compressImage(ev.target.result, function(compressed) {
           const data = loadData();
           data.photo = compressed;
           saveData(data);
@@ -1430,8 +1403,7 @@
       canvas.height = h;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, w, h);
-      const compressed = canvas.toDataURL('image/jpeg', 0.7);
-      callback(compressed);
+      callback(canvas.toDataURL('image/jpeg', 0.7));
     };
     img.src = base64;
   }
@@ -1442,14 +1414,12 @@
   function setupProfileEditing() {
     const nameInput = document.getElementById('userNameInput');
     const ageInput = document.getElementById('userAgeInput');
-
     nameInput.addEventListener('change', function() {
       const data = loadData();
       data.name = this.value.trim();
       saveData(data);
       soundClick();
     });
-
     ageInput.addEventListener('change', function() {
       const data = loadData();
       data.age = this.value.trim();
