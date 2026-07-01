@@ -112,6 +112,22 @@
       font-weight: 700;
       font-size: 16px;
     }
+    .profile-info .field .title-select-btn {
+      background: #1a2a3e;
+      border: 1px solid #2a4a6a;
+      color: #b3d9ff;
+      padding: 2px 12px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    .profile-info .field .title-select-btn:hover {
+      background: #1f3a5a;
+      border-color: #4a9eff;
+    }
 
     .profile-photo {
       flex: 1;
@@ -278,7 +294,7 @@
       aspect-ratio: 1/1;
     }
 
-    /* ── Квесты ── */
+    /* ── Квесты и персональные задания ── */
     .card {
       background: #0e131e;
       border: 1px solid #1a2332;
@@ -297,7 +313,26 @@
       font-weight: 600;
       color: #7a9ec8;
       margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+    .card .add-btn {
+      background: #1a2a3e;
+      border: 1px solid #2a4a6a;
+      color: #b3d9ff;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .card .add-btn:hover {
+      background: #1f3a5a;
+      border-color: #4a9eff;
+    }
+
     .quest-item {
       display: flex;
       align-items: center;
@@ -327,52 +362,15 @@
     .quest-item .delete-btn {
       background: transparent;
       border: none;
-      color: #6a3a3a;
+      color: #6a4a4a;
       cursor: pointer;
       font-size: 14px;
       margin-left: auto;
+      padding: 0 4px;
       transition: color 0.2s;
     }
     .quest-item .delete-btn:hover {
-      color: #aa4a4a;
-    }
-
-    /* ── Персональные задания ── */
-    .personal-add {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .personal-add input {
-      flex: 1;
-      background: #1a2332;
-      border: 1px solid #2a3a4a;
-      color: #b3d9ff;
-      padding: 6px 10px;
-      border-radius: 4px;
-      font-family: inherit;
-      font-size: 14px;
-      outline: none;
-      transition: border 0.2s;
-    }
-    .personal-add input:focus {
-      border-color: #4a9eff;
-    }
-    .personal-add button {
-      background: #1a2a3e;
-      border: 1px solid #2a4a6a;
-      color: #b3d9ff;
-      padding: 6px 16px;
-      border-radius: 4px;
-      font-family: inherit;
-      font-size: 14px;
-      cursor: pointer;
-      transition: 0.2s;
-      white-space: nowrap;
-    }
-    .personal-add button:hover {
-      background: #1f3a5a;
-      border-color: #4a9eff;
+      color: #aa6a6a;
     }
 
     .badge {
@@ -430,58 +428,98 @@
       color: #ccaaaa;
     }
 
-    /* ── Титулы ── */
-    .title-grid {
+    /* ── Модальное окно выбора титула ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 3000;
+      backdrop-filter: blur(3px);
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-box {
+      background: #0e121b;
+      border: 2px solid #2a4a6a;
+      border-radius: 8px;
+      padding: 24px 28px;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: 0 0 40px rgba(80, 180, 255, 0.2), inset 0 0 12px 2px rgba(80, 180, 255, 0.10);
+      animation: modalPop 0.3s ease forwards;
+      transform-origin: center center;
+    }
+    @keyframes modalPop {
+      0% { transform: scale(0.2); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .modal-box h2 {
+      color: #8ab8ff;
+      font-weight: 400;
+      letter-spacing: 1px;
+      font-size: 22px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .modal-title-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
       margin: 12px 0;
     }
-    .title-card {
+    .modal-title-card {
       background: #0e131e;
       border: 1px solid #1a2332;
       border-radius: 4px;
-      padding: 10px 12px;
+      padding: 8px 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       transition: border 0.2s, opacity 0.2s;
+      cursor: pointer;
     }
-    .title-card.locked {
+    .modal-title-card.locked {
       opacity: 0.35;
       border-color: #2a2a3a;
+      cursor: not-allowed;
     }
-    .title-card .title-name {
+    .modal-title-card .title-name {
       color: #d4af37;
       font-weight: 600;
-      font-size: 15px;
+      font-size: 14px;
     }
-    .title-card .title-status {
-      font-size: 12px;
+    .modal-title-card .title-status {
+      font-size: 11px;
       color: #6a8aaa;
     }
-    .title-card .title-select-btn {
+    .modal-title-card.selected {
+      border-color: #4a9eff;
+      box-shadow: 0 0 8px rgba(74, 158, 255, 0.3);
+    }
+    .modal-close-btn {
       background: #1a2a3e;
       border: 1px solid #2a4a6a;
       color: #b3d9ff;
-      padding: 2px 12px;
+      padding: 6px 24px;
       border-radius: 4px;
       font-family: inherit;
-      font-size: 12px;
+      font-size: 14px;
       cursor: pointer;
       transition: 0.2s;
+      margin-top: 12px;
+      display: block;
+      width: 100%;
     }
-    .title-card .title-select-btn:hover:not(:disabled) {
+    .modal-close-btn:hover {
       background: #1f3a5a;
       border-color: #4a9eff;
-    }
-    .title-card .title-select-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-    .title-card.selected {
-      border-color: #4a9eff;
-      box-shadow: 0 0 8px rgba(74, 158, 255, 0.3);
     }
 
     /* ── Достижения ── */
@@ -640,11 +678,8 @@
       .btn-reset {
         flex: 1;
       }
-      .title-grid {
+      .modal-title-grid {
         grid-template-columns: 1fr;
-      }
-      .personal-add {
-        flex-direction: column;
       }
     }
   </style>
@@ -658,6 +693,17 @@
     <div class="message" id="welcomeMessage"></div>
     <p>Дней в системе: <span class="highlight" id="welcomeDays">1</span></p>
     <button class="btn-accept" id="welcomeAccept">ПРИНЯТЬ</button>
+  </div>
+</div>
+
+<!-- Модальное окно выбора титула -->
+<div class="modal-overlay" id="titleModal">
+  <div class="modal-box">
+    <h2>🏅 Выберите титул</h2>
+    <div class="modal-title-grid" id="modalTitleGrid">
+      <!-- генерируется скриптом -->
+    </div>
+    <button class="modal-close-btn" id="modalCloseBtn">Закрыть</button>
   </div>
 </div>
 
@@ -687,6 +733,7 @@
       <div class="field">
         <label>Титул</label>
         <span class="title-value" id="titleDisplay">Охотник E-ранга</span>
+        <button class="title-select-btn" id="titleSelectBtn">Выбрать</button>
       </div>
     </div>
     <div class="profile-photo" id="photoContainer">
@@ -700,7 +747,6 @@
   <div class="tabs">
     <button class="tab-btn active" data-tab="stats">📈 Хар-ки</button>
     <button class="tab-btn" data-tab="quests">📋 Задания</button>
-    <button class="tab-btn" data-tab="titles">🏅 Титулы</button>
     <button class="tab-btn" data-tab="achievements">🏆 Достижения</button>
   </div>
 
@@ -709,10 +755,7 @@
     <div class="stat-card">
       <table class="stat-table">
         <thead>
-          <tr>
-            <th style="width:60%;">Характеристика</th>
-            <th style="width:40%; text-align:right;">Значение</th>
-          </tr>
+          <tr><th style="width:60%;">Характеристика</th><th style="width:40%; text-align:right;">Значение</th></tr>
         </thead>
         <tbody id="statBody"></tbody>
       </table>
@@ -727,42 +770,27 @@
 
   <!-- Задания -->
   <div class="tab-content" id="tab-quests">
-    <!-- Блок: Задания системы -->
-    <div class="card" style="border-left: 2px solid #4a6a8a;">
-      <h3 style="color: #8ab8ff;">📌 Задания системы</h3>
-      <div class="card" style="border-left: 2px solid #2a4a6a;">
-        <h3>💪 Физический</h3>
-        <div id="physQuestList"></div>
-      </div>
-      <div class="card" style="border-left: 2px solid #2a4a6a;">
-        <h3>🧠 Ментальный</h3>
-        <div id="mentQuestList"></div>
-      </div>
-      <div class="card" style="border-left: 2px solid #2a4a6a;">
-        <h3>🗣 Социальный</h3>
-        <div id="socQuestList"></div>
-      </div>
+    <!-- Блок системных заданий -->
+    <div class="card">
+      <h3>📜 Задания системы</h3>
+      <div id="physQuestList"></div>
+      <div id="mentQuestList"></div>
+      <div id="socQuestList"></div>
     </div>
 
-    <!-- Блок: Персональные задания -->
-    <div class="card" style="border-left: 2px solid #6a8a4a; margin-top: 16px;">
-      <h3 style="color: #8ab8ff;">📋 Персональные задания</h3>
-      <div class="personal-add">
-        <input type="text" id="personalInput" placeholder="Добавить дело..." maxlength="80">
-        <button id="personalAddBtn">➕ Добавить</button>
-      </div>
-      <div id="personalList"></div>
+    <!-- Блок персональных заданий -->
+    <div class="card">
+      <h3>
+        📝 Персональные задания
+        <button class="add-btn" id="addPersonalTask">➕ Добавить</button>
+      </h3>
+      <div id="personalTaskList"></div>
     </div>
 
     <div class="badge-group">
       <span class="badge" id="bonusTri">🌟 Все сферы: нет</span>
       <span class="badge" id="bonusStreak">🔥 Стрик 7+: нет</span>
     </div>
-  </div>
-
-  <!-- Титулы -->
-  <div class="tab-content" id="tab-titles">
-    <div class="title-grid" id="titleGrid"></div>
   </div>
 
   <!-- Достижения -->
@@ -815,6 +843,7 @@
     age: '',
     photo: '',
     selectedTitle: 'Охотник E-ранга',
+    personalTasks: [], // массив { text: string, done: boolean }
     stats: {
       STR: { level: 10, exp: 0 },
       AGI: { level: 10, exp: 0 },
@@ -823,14 +852,11 @@
       CHA: { level: 10, exp: 0 },
       PER: { level: 10, exp: 0 }
     },
-    // Системные задания (фиксированные)
     quests: {
       phys: [false,false,false,false,false],
       ment: [false,false,false,false,false],
       soc: [false,false,false,false,false]
     },
-    // Персональные задания: массив объектов { text: string, done: boolean }
-    personalTasks: [],
     unlockedAchievements: [],
     justUnlocked: []
   };
@@ -875,7 +901,6 @@
   //  ЗАВЕРШЕНИЕ ДНЯ
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function finishDay(data) {
-    // Системные задания
     const allPhys = data.quests.phys.every(v=>v);
     const allMent = data.quests.ment.every(v=>v);
     const allSoc = data.quests.soc.every(v=>v);
@@ -930,11 +955,10 @@
     const newPer = Math.floor(10 + Math.floor(intLv / 10) + Math.floor(chaLv / 15) + bonusPer);
     if (newPer > data.stats.PER.level) data.stats.PER.level = newPer;
 
-    // Сбрасываем только системные задания (персональные остаются)
     data.quests.phys = [false,false,false,false,false];
     data.quests.ment = [false,false,false,false,false];
     data.quests.soc = [false,false,false,false,false];
-    // Персональные задания НЕ сбрасываем – они остаются, но пользователь может управлять ими вручную
+    // Персональные задания не сбрасываются – они остаются до ручного удаления
     data.day += 1;
 
     const newUnlocks = checkAchievements(data);
@@ -995,10 +1019,12 @@
 
     renderStatTable(data);
     renderRadar(data);
+
     // Системные задания
     renderQuest('phys', data.quests.phys, getQuestList('phys', rank));
     renderQuest('ment', data.quests.ment, getQuestList('ment', rank));
     renderQuest('soc', data.quests.soc, getQuestList('soc', rank));
+
     // Персональные задания
     renderPersonalTasks(data);
 
@@ -1011,7 +1037,6 @@
     streakEl.textContent = hasStreak ? '🔥 Стрик 7+: АКТИВНО' : '🔥 Стрик 7+: нет';
     streakEl.className = 'badge' + (hasStreak ? ' active' : '');
 
-    renderTitles(data);
     renderAchievements(data);
     saveData(data);
   }
@@ -1138,7 +1163,7 @@
     });
   }
 
-  // ── Системные задания (с блокировкой) ──
+  // ── Системные квесты ──
   function renderQuest(type, checks, items) {
     const containerId = type === 'phys' ? 'physQuestList' : (type === 'ment' ? 'mentQuestList' : 'socQuestList');
     const container = document.getElementById(containerId);
@@ -1172,7 +1197,7 @@
           saveData(data);
           renderAll(data);
         } else {
-          this.checked = true; // защита от снятия
+          this.checked = true;
         }
       });
     });
@@ -1216,74 +1241,85 @@
 
   // ── Персональные задания ──
   function renderPersonalTasks(data) {
-    const container = document.getElementById('personalList');
+    const container = document.getElementById('personalTaskList');
     container.innerHTML = '';
     const tasks = data.personalTasks || [];
-
-    tasks.forEach((task, idx) => {
+    tasks.forEach((task, index) => {
       const div = document.createElement('div');
       div.className = 'quest-item' + (task.done ? ' done' : '');
       const inp = document.createElement('input');
       inp.type = 'checkbox';
       inp.checked = task.done || false;
-      if (task.done) inp.disabled = true;
-      inp.dataset.idx = idx;
+      inp.dataset.index = index;
+      // Не блокируем, чтобы можно было снять галочку
       const span = document.createElement('span');
       span.textContent = task.text;
       const delBtn = document.createElement('button');
       delBtn.className = 'delete-btn';
       delBtn.textContent = '✕';
-      delBtn.title = 'Удалить задание';
-
+      delBtn.dataset.index = index;
       div.appendChild(inp);
       div.appendChild(span);
       div.appendChild(delBtn);
       container.appendChild(div);
+    });
 
-      // Обработчик для чекбокса
+    // Обработчики для чекбоксов
+    container.querySelectorAll('input[type="checkbox"]').forEach(inp => {
       inp.addEventListener('change', function() {
-        if (this.checked) {
-          this.disabled = true;
-          soundClick();
-          const data = loadData();
-          data.personalTasks[idx].done = true;
-          saveData(data);
-          renderAll(data);
-        } else {
-          this.checked = true;
-        }
-      });
-
-      // Обработчик для удаления
-      delBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        soundClick();
+        const index = parseInt(this.dataset.index);
         const data = loadData();
-        data.personalTasks.splice(idx, 1);
+        data.personalTasks[index].done = this.checked;
         saveData(data);
         renderAll(data);
+        soundClick();
+      });
+    });
+
+    // Обработчики для удаления
+    container.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const index = parseInt(this.dataset.index);
+        if (confirm('Удалить задание?')) {
+          const data = loadData();
+          data.personalTasks.splice(index, 1);
+          saveData(data);
+          renderAll(data);
+          soundClick();
+        }
       });
     });
   }
 
   // ── Добавление персонального задания ──
   function addPersonalTask() {
-    const input = document.getElementById('personalInput');
-    const text = input.value.trim();
-    if (text === '') return;
-    const data = loadData();
-    if (!data.personalTasks) data.personalTasks = [];
-    data.personalTasks.push({ text: text, done: false });
-    saveData(data);
-    renderAll(data);
-    input.value = '';
+    const text = prompt('Введите новое задание:');
+    if (text && text.trim().length > 0) {
+      const data = loadData();
+      data.personalTasks.push({ text: text.trim(), done: false });
+      saveData(data);
+      renderAll(data);
+      soundClick();
+    }
+  }
+
+  // ── Модальное окно выбора титула ──
+  function openTitleModal() {
+    const modal = document.getElementById('titleModal');
+    modal.classList.add('active');
+    renderModalTitles();
     soundClick();
   }
 
-  // ── Титулы ──
-  function renderTitles(data) {
-    const container = document.getElementById('titleGrid');
+  function closeTitleModal() {
+    document.getElementById('titleModal').classList.remove('active');
+    soundClick();
+  }
+
+  function renderModalTitles() {
+    const container = document.getElementById('modalTitleGrid');
     container.innerHTML = '';
+    const data = loadData();
     const avg = avgAllMain(data);
     const titles = [
       { name: 'Охотник E-ранга', need: 0 },
@@ -1299,27 +1335,23 @@
       const unlocked = avg >= t.need;
       const isSelected = (selected === t.name);
       const div = document.createElement('div');
-      div.className = 'title-card' + (unlocked ? '' : ' locked') + (isSelected ? ' selected' : '');
+      div.className = 'modal-title-card' + (unlocked ? '' : ' locked') + (isSelected ? ' selected' : '');
       div.innerHTML = `
         <span class="title-name">${t.name}</span>
-        <span class="title-status">${unlocked ? '✅ Открыт' : '🔒 Заблокирован'}</span>
-        <button class="title-select-btn" ${unlocked ? '' : 'disabled'} data-title="${t.name}">
-          ${isSelected ? '✓ Выбран' : 'Выбрать'}
-        </button>
+        <span class="title-status">${unlocked ? (isSelected ? '✓' : '') : '🔒'}</span>
       `;
+      if (unlocked) {
+        div.style.cursor = 'pointer';
+        div.addEventListener('click', function() {
+          const data = loadData();
+          data.selectedTitle = t.name;
+          saveData(data);
+          renderAll(data);
+          renderModalTitles(); // обновить список в модалке
+          soundClick();
+        });
+      }
       container.appendChild(div);
-    });
-
-    container.querySelectorAll('.title-select-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        if (this.disabled) return;
-        const title = this.dataset.title;
-        const data = loadData();
-        data.selectedTitle = title;
-        saveData(data);
-        renderAll(data);
-        soundClick();
-      });
     });
   }
 
@@ -1469,7 +1501,6 @@
     const contents = {
       stats: document.getElementById('tab-stats'),
       quests: document.getElementById('tab-quests'),
-      titles: document.getElementById('tab-titles'),
       achievements: document.getElementById('tab-achievements')
     };
     tabs.forEach(btn => {
@@ -1576,11 +1607,15 @@
   setupPhotoUpload();
   setupProfileEditing();
 
-  // Обработчик для добавления персонального задания
-  document.getElementById('personalAddBtn').addEventListener('click', addPersonalTask);
-  document.getElementById('personalInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') addPersonalTask();
+  // Кнопки для модального окна титулов
+  document.getElementById('titleSelectBtn').addEventListener('click', openTitleModal);
+  document.getElementById('modalCloseBtn').addEventListener('click', closeTitleModal);
+  document.getElementById('titleModal').addEventListener('click', function(e) {
+    if (e.target === this) closeTitleModal();
   });
+
+  // Добавление персонального задания
+  document.getElementById('addPersonalTask').addEventListener('click', addPersonalTask);
 
   document.getElementById('welcomeAccept').addEventListener('click', hideWelcome);
   document.getElementById('btnResetFull').addEventListener('click', resetFull);
