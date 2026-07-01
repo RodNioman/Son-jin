@@ -25,6 +25,7 @@
       padding: 20px 16px 28px;
       box-shadow: inset 0 0 8px 2px rgba(80, 180, 255, 0.15);
       animation: pulse-border 4s infinite ease-in-out;
+      position: relative;
     }
     @keyframes pulse-border {
       0% { border-color: #1a2a3a; box-shadow: inset 0 0 8px 2px rgba(80, 180, 255, 0.10); }
@@ -32,12 +33,31 @@
       100% { border-color: #1a2a3a; box-shadow: inset 0 0 8px 2px rgba(80, 180, 255, 0.10); }
     }
     .header {
-      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline;
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
       border-bottom: 1px solid #1f2a3a; padding-bottom: 10px; margin-bottom: 16px;
     }
     .header .title { font-size: 22px; font-weight: 700; color: #8ab8ff; letter-spacing: 1px; text-shadow: 0 0 8px rgba(74,158,255,0.2); }
-    .header .info { font-size: 14px; color: #6a8aaa; display: flex; gap: 16px; flex-wrap: wrap; }
+    .header .info {
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      font-size: 14px; color: #6a8aaa;
+    }
     .header .info strong { color: #b3d9ff; }
+    .header .btn-settings {
+      background: #1a2a3e;
+      border: 1px solid #2a4a6a;
+      color: #b3d9ff;
+      padding: 4px 14px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    .header .btn-settings:hover {
+      background: #1f3a5a;
+      border-color: #4a9eff;
+    }
 
     /* Блок профиля */
     .profile-row {
@@ -160,7 +180,7 @@
 
     .footer-info { font-size: 12px; color: #4a5a6a; margin-top: 16px; border-top: 1px solid #141c2a; padding-top: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; }
 
-    /* Оверлей сообщений */
+    /* Оверлей сообщений (приветствие) */
     .welcome-overlay { display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(2px); }
     .welcome-overlay.hidden { display: none; }
     .welcome-box { background: #0e121b; border: 2px solid #2a4a6a; border-radius: 8px; padding: 28px 32px; max-width: 480px; width: 90%; text-align: center; box-shadow: 0 0 40px rgba(80,180,255,0.2), inset 0 0 12px 2px rgba(80,180,255,0.10); animation: pulse-border 3s infinite ease-in-out; }
@@ -170,36 +190,128 @@
     .welcome-box .btn-accept { background: #1a2a3e; border: 1px solid #4a9eff; color: #b3d9ff; padding: 10px 40px; border-radius: 4px; font-family: inherit; font-size: 16px; cursor: pointer; transition: 0.25s; margin-top: 12px; }
     .welcome-box .btn-accept:hover { background: #1f3a5a; border-color: #7ac0ff; box-shadow: 0 0 20px rgba(74,158,255,0.3); }
 
-    /* Стили для тренировок */
-    .training-form { display: flex; flex-direction: column; gap: 12px; }
-    .training-form .row { display: flex; gap: 12px; flex-wrap: wrap; }
-    .training-form .row .form-group { flex: 1; min-width: 120px; }
-    .training-form .form-group { display: flex; flex-direction: column; gap: 4px; }
-    .training-form .form-group label { color: #6a8aaa; font-size: 14px; font-weight: 600; }
-    .training-form .form-group input, .training-form .form-group select {
+    /* Стили для модального окна настроек */
+    .settings-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 3000;
+      backdrop-filter: blur(3px);
+      animation: fadeInOverlay 0.3s ease;
+    }
+    .settings-overlay.active { display: flex; }
+    @keyframes fadeInOverlay {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    .settings-box {
+      background: #0e121b;
+      border: 2px solid #2a4a6a;
+      border-radius: 8px;
+      padding: 24px 28px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 0 40px rgba(80,180,255,0.2), inset 0 0 12px 2px rgba(80,180,255,0.10);
+      animation: scaleIn 0.25s ease;
+    }
+    @keyframes scaleIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .settings-box h2 {
+      color: #8ab8ff;
+      font-weight: 400;
+      letter-spacing: 1px;
+      font-size: 24px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .settings-box .close-btn {
+      float: right;
+      background: transparent;
+      border: none;
+      color: #6a8aaa;
+      font-size: 24px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .settings-box .close-btn:hover { color: #b3d9ff; }
+
+    .settings-box .training-form { display: flex; flex-direction: column; gap: 12px; }
+    .settings-box .training-form .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .settings-box .training-form .row .form-group { flex: 1; min-width: 120px; }
+    .settings-box .training-form .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .settings-box .training-form .form-group label { color: #6a8aaa; font-size: 14px; font-weight: 600; }
+    .settings-box .training-form .form-group input,
+    .settings-box .training-form .form-group select {
       background: #1a2332; border: 1px solid #2a3a4a; color: #b3d9ff; padding: 8px 10px; border-radius: 4px; font-family: inherit; font-size: 14px; outline: none; transition: border 0.2s;
     }
-    .training-form .form-group input:focus, .training-form .form-group select:focus { border-color: #4a9eff; }
-    .training-form .form-group select option { background: #0e121b; color: #b3d9ff; }
-    .training-form .btn-generate {
+    .settings-box .training-form .form-group input:focus,
+    .settings-box .training-form .form-group select:focus { border-color: #4a9eff; }
+    .settings-box .training-form .form-group select option { background: #0e121b; color: #b3d9ff; }
+    .settings-box .training-form .btn-generate {
       background: #1a3a5a; border: 1px solid #4a9eff; color: #b3d9ff; padding: 10px 0; border-radius: 4px; font-family: inherit; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 8px; width: 100%;
     }
-    .training-form .btn-generate:hover { background: #1f4a6a; border-color: #7ac0ff; }
-    .training-form .btn-reset-plan {
+    .settings-box .training-form .btn-generate:hover { background: #1f4a6a; border-color: #7ac0ff; }
+    .settings-box .training-form .btn-reset-plan {
       background: #2a1a1a; border: 1px solid #4a2a2a; color: #aa8a8a; padding: 6px 0; border-radius: 4px; font-family: inherit; font-size: 14px; cursor: pointer; transition: 0.2s; margin-top: 4px; width: 100%;
     }
-    .training-form .btn-reset-plan:hover { background: #3a1a1a; border-color: #6a3a3a; color: #ccaaaa; }
+    .settings-box .training-form .btn-reset-plan:hover { background: #3a1a1a; border-color: #6a3a3a; color: #ccaaaa; }
+    .settings-box .result-block {
+      margin-top: 16px;
+      background: #0e131e;
+      border: 1px solid #1a2332;
+      border-radius: 4px;
+      padding: 12px;
+      display: none;
+    }
+    .settings-box .result-block.active { display: block; }
+    .settings-box .result-block .bmi-badge { display: inline-block; background: #1a2a3e; color: #7ac0ff; padding: 4px 14px; border-radius: 30px; font-weight: 600; font-size: 14px; }
+    .settings-box .result-block .plan-title { font-size: 20px; font-weight: 700; color: #d4af37; margin: 6px 0 2px; }
+    .settings-box .result-block .freq { font-size: 14px; color: #7ac0ff; font-weight: 500; }
+    .settings-box .result-block .description { background: #1a2332; padding: 10px; border-left: 4px solid #4a9eff; margin: 10px 0; line-height: 1.5; color: #b3d9ff; border-radius: 4px; font-size: 14px; }
+    .settings-box .result-block .exercises { list-style: none; padding: 0; }
+    .settings-box .result-block .exercises li { padding: 4px 8px; background: #1a2332; margin: 3px 0; border-radius: 4px; border: 1px solid #1a2a3a; display: flex; align-items: center; gap: 8px; color: #c8d0e0; font-size: 13px; }
+    .settings-box .result-block .exercises li::before { content: "✓"; color: #27ae60; font-weight: bold; }
+    .settings-box .result-block .warning { margin-top: 10px; background: #2a1a1a; border: 1px solid #4a2a2a; padding: 8px; border-radius: 4px; color: #ccaaaa; font-size: 12px; }
 
-    .result-block { margin-top: 20px; background: #0e131e; border: 1px solid #1a2332; border-radius: 4px; padding: 16px; display: none; box-shadow: inset 0 0 4px 1px rgba(80,180,255,0.08); }
-    .result-block.active { display: block; }
-    .result-block .bmi-badge { display: inline-block; background: #1a2a3e; color: #7ac0ff; padding: 4px 14px; border-radius: 30px; font-weight: 600; font-size: 14px; }
-    .result-block .plan-title { font-size: 22px; font-weight: 700; color: #d4af37; margin: 8px 0 4px; }
-    .result-block .freq { font-size: 16px; color: #7ac0ff; font-weight: 500; }
-    .result-block .description { background: #1a2332; padding: 12px; border-left: 4px solid #4a9eff; margin: 12px 0; line-height: 1.6; color: #b3d9ff; border-radius: 4px; }
-    .result-block .exercises { list-style: none; padding: 0; }
-    .result-block .exercises li { padding: 6px 10px; background: #1a2332; margin: 4px 0; border-radius: 4px; border: 1px solid #1a2a3a; display: flex; align-items: center; gap: 10px; color: #c8d0e0; }
-    .result-block .exercises li::before { content: "✓"; color: #27ae60; font-weight: bold; }
-    .result-block .warning { margin-top: 12px; background: #2a1a1a; border: 1px solid #4a2a2a; padding: 10px; border-radius: 4px; color: #ccaaaa; font-size: 13px; }
+    /* Сообщение о необходимости настройки */
+    .setup-msg-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 2500;
+      backdrop-filter: blur(2px);
+      animation: fadeInOverlay 0.3s ease;
+    }
+    .setup-msg-overlay.active { display: flex; }
+    .setup-msg-box {
+      background: #0e121b;
+      border: 2px solid #2a4a6a;
+      border-radius: 8px;
+      padding: 28px 32px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(80,180,255,0.2), inset 0 0 12px 2px rgba(80,180,255,0.10);
+      animation: scaleIn 0.25s ease;
+    }
+    .setup-msg-box h2 { color: #d4af37; font-weight: 400; letter-spacing: 1px; font-size: 22px; margin-bottom: 12px; }
+    .setup-msg-box p { color: #b3d9ff; font-size: 16px; line-height: 1.5; }
+    .setup-msg-box .btn-accept-setup {
+      background: #1a2a3e; border: 1px solid #4a9eff; color: #b3d9ff; padding: 10px 40px; border-radius: 4px; font-family: inherit; font-size: 16px; cursor: pointer; transition: 0.25s; margin-top: 16px;
+    }
+    .setup-msg-box .btn-accept-setup:hover { background: #1f3a5a; border-color: #7ac0ff; }
 
     @media (max-width: 600px) {
       .stat-table .stat-name { font-size: 1.1em; min-width: 70px; }
@@ -207,24 +319,60 @@
       .tab-btn { font-size: 11px; padding: 4px 6px; }
       .profile-row { flex-direction: column; align-items: stretch; }
       .profile-photo { max-width: 100%; aspect-ratio: 3/2; }
-      .welcome-box { padding: 20px; }
-      .welcome-box .message { font-size: 16px; }
-      .btn-group { flex-direction: row; gap: 8px; }
-      .btn-reset { flex: 1; }
-      .title-grid { grid-template-columns: 1fr; }
-      .training-form .row { flex-direction: column; }
+      .settings-box { padding: 16px; }
+      .settings-box .training-form .row { flex-direction: column; }
+      .header .info { gap: 8px; }
+      .header .btn-settings { font-size: 12px; padding: 2px 10px; }
     }
   </style>
 </head>
 <body>
 
-<!-- Оверлей сообщений -->
+<!-- Оверлей приветствия -->
 <div class="welcome-overlay hidden" id="welcomeOverlay">
   <div class="welcome-box">
     <h2 id="welcomeTitle"></h2>
     <div class="message" id="welcomeMessage"></div>
     <p>Дней в системе: <span class="highlight" id="welcomeDays">1</span></p>
     <button class="btn-accept" id="welcomeAccept">ПРИНЯТЬ</button>
+  </div>
+</div>
+
+<!-- Оверлей сообщения о настройке -->
+<div class="setup-msg-overlay" id="setupMsgOverlay">
+  <div class="setup-msg-box">
+    <h2>⚙️ Настройка системы</h2>
+    <p>Игрок, перед началом работы системы, её необходимо настроить.<br>Нажмите кнопку <strong>«Настройки»</strong> в правом верхнем углу и настройте систему.</p>
+    <button class="btn-accept-setup" id="setupMsgAccept">Понятно</button>
+  </div>
+</div>
+
+<!-- Модальное окно настроек -->
+<div class="settings-overlay" id="settingsOverlay">
+  <div class="settings-box">
+    <button class="close-btn" id="settingsCloseBtn">&times;</button>
+    <h2>⚙️ Настройки</h2>
+    <div class="training-form">
+      <div class="row">
+        <div class="form-group"><label>Вес (кг)</label><input type="number" id="weight" placeholder="70" step="0.1" min="20" max="250"></div>
+        <div class="form-group"><label>Рост (см)</label><input type="number" id="height" placeholder="170" step="0.1" min="100" max="250"></div>
+      </div>
+      <div class="row">
+        <div class="form-group"><label>Цель</label><select id="goal"><option value="похудение">Похудение / Сушка</option><option value="набор массы">Набор мышечной массы</option><option value="выносливость">Выносливость</option><option value="поддержание формы">Поддержание формы</option></select></div>
+        <div class="form-group"><label>Уровень подготовки</label><select id="level"><option value="новичок">Новичок</option><option value="средний">Средний</option><option value="продвинутый">Продвинутый</option></select></div>
+      </div>
+      <button class="btn-generate" id="btnGeneratePlan">Сгенерировать план</button>
+      <button class="btn-reset-plan" id="btnResetPlan">🔄 Сбросить план</button>
+    </div>
+    <div id="resultBlock" class="result-block">
+      <div><span class="bmi-badge" id="bmiDisplay"></span></div>
+      <div class="plan-title" id="planType"></div>
+      <div class="freq" id="frequency"></div>
+      <div class="description" id="description"></div>
+      <h3 style="color:#7a9ec8; font-size:14px; margin:8px 0 4px;">📋 Пример упражнений</h3>
+      <ul class="exercises" id="exerciseList"></ul>
+      <div class="warning" id="warning"></div>
+    </div>
   </div>
 </div>
 
@@ -237,6 +385,7 @@
       <span>Уровень <strong id="levelDisplay">1</strong></span>
       <span>Опыт <strong id="expDisplay">0</strong></span>
       <span>День <strong id="dayDisplay">1</strong></span>
+      <button class="btn-settings" id="btnSettings">⚙️ Настройки</button>
     </div>
   </div>
 
@@ -254,12 +403,11 @@
     </div>
   </div>
 
-  <!-- Вкладки -->
+  <!-- Вкладки (без "Тренировки") -->
   <div class="tabs">
     <button class="tab-btn active" data-tab="stats">📈 Хар-ки</button>
     <button class="tab-btn" data-tab="quests">📋 Задания</button>
     <button class="tab-btn" data-tab="titles">🏅 Титулы</button>
-    <button class="tab-btn" data-tab="trainings">🏋️ Тренировки</button>
     <button class="tab-btn" data-tab="achievements">🏆 Достижения</button>
   </div>
 
@@ -272,7 +420,6 @@
 
   <!-- Задания -->
   <div class="tab-content" id="tab-quests">
-    <!-- Блок "Задания системы" -->
     <div style="margin-bottom: 16px;">
       <h2 style="color: #7a9ec8; font-size: 16px; font-weight: 400; border-bottom: 1px solid #1a2332; padding-bottom: 4px; margin-bottom: 10px;">📌 Задания системы</h2>
       <div class="card"><h3>💪 Физический</h3><div id="physQuestList"></div></div>
@@ -283,8 +430,6 @@
         <span class="badge" id="bonusStreak">🔥 Стрик 7+: нет</span>
       </div>
     </div>
-
-    <!-- Блок "Персональные задания" -->
     <div class="personal-tasks">
       <h2 style="color: #7a9ec8; font-size: 16px; font-weight: 400; border-bottom: 1px solid #1a2332; padding-bottom: 4px; margin-bottom: 10px;">📋 Персональные задания</h2>
       <div class="add-task">
@@ -298,31 +443,6 @@
   <!-- Титулы -->
   <div class="tab-content" id="tab-titles">
     <div class="title-grid" id="titleGrid"></div>
-  </div>
-
-  <!-- Тренировки -->
-  <div class="tab-content" id="tab-trainings">
-    <div class="training-form">
-      <div class="row">
-        <div class="form-group"><label>Вес (кг)</label><input type="number" id="weight" placeholder="70" step="0.1" min="20" max="250"></div>
-        <div class="form-group"><label>Рост (см)</label><input type="number" id="height" placeholder="170" step="0.1" min="100" max="250"></div>
-      </div>
-      <div class="row">
-        <div class="form-group"><label>Цель</label><select id="goal"><option value="похудение">Похудение / Сушка</option><option value="набор массы">Набор мышечной массы</option><option value="выносливость">Выносливость</option><option value="поддержание формы">Поддержание формы</option></select></div>
-        <div class="form-group"><label>Уровень подготовки</label><select id="level"><option value="новичок">Новичок</option><option value="средний">Средний</option><option value="продвинутый">Продвинутый</option></select></div>
-      </div>
-      <button class="btn-generate" onclick="generatePlan()">Сгенерировать план</button>
-      <button class="btn-reset-plan" id="btnResetPlan">🔄 Сбросить план</button>
-    </div>
-    <div id="resultBlock" class="result-block">
-      <div><span class="bmi-badge" id="bmiDisplay"></span></div>
-      <div class="plan-title" id="planType"></div>
-      <div class="freq" id="frequency"></div>
-      <div class="description" id="description"></div>
-      <h3 style="color:#7a9ec8; font-size:14px; margin:10px 0 6px;">📋 Пример упражнений</h3>
-      <ul class="exercises" id="exerciseList"></ul>
-      <div class="warning" id="warning"></div>
-    </div>
   </div>
 
   <!-- Достижения -->
@@ -367,7 +487,7 @@
     height: '',
     goal: 'похудение',
     fitnessLevel: 'новичок',
-    customPhysItems: [], // список упражнений для физических заданий (пусто = нет заданий)
+    customPhysItems: [],
     personalTasks: [],
     stats: {
       STR: { level: 10, exp: 0 },
@@ -378,12 +498,13 @@
       PER: { level: 10, exp: 0 }
     },
     quests: {
-      phys: [], // чекбоксы для физических (длина совпадает с customPhysItems)
+      phys: [],
       ment: [false,false,false,false,false],
       soc: [false,false,false,false,false]
     },
     unlockedAchievements: [],
-    justUnlocked: []
+    justUnlocked: [],
+    setupShown: false // флаг для сообщения о настройке
   };
 
   function loadData() {
@@ -394,7 +515,6 @@
         for (let key in DEFAULT) {
           if (!(key in parsed)) parsed[key] = DEFAULT[key];
         }
-        // Если длина чекбоксов не совпадает с длиной упражнений – синхронизируем
         if (parsed.quests.phys.length !== parsed.customPhysItems.length) {
           parsed.quests.phys = parsed.customPhysItems.map(() => false);
         }
@@ -417,8 +537,6 @@
   //  ЗАВЕРШЕНИЕ ДНЯ И ПРОВЕРКА НОВОГО ДНЯ
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function finishDay(data) {
-    // Физические задания – только из customPhysItems, их чекбоксы не сбрасываются автоматически
-    // Ментальные и социальные – стандартные
     const allPhys = data.customPhysItems.length > 0 ? data.quests.phys.every(v=>v) : false;
     const allMent = data.quests.ment.every(v=>v);
     const allSoc = data.quests.soc.every(v=>v);
@@ -430,7 +548,6 @@
     const bonusMap = { E:15, D:20, C:25, B:30, A:35 };
     const baseBonus = bonusMap[rank] || 15;
 
-    // Начисляем EXP за выполненные физические упражнения (по 10 за каждое)
     if (allPhys && data.customPhysItems.length > 0) {
       const count = data.customPhysItems.length;
       data.stats.STR.exp += count * 10 + (data.streak >= 7 ? 10 : 0);
@@ -452,7 +569,6 @@
       data.freePoints += 1;
     }
 
-    // Повышаем уровни
     const statKeys = ['STR','AGI','VIT','INT','CHA'];
     let leveled = false;
     statKeys.forEach(key => {
@@ -465,21 +581,18 @@
     });
     if (leveled) { soundLevelUp(); data.freePoints += 3; }
 
-    // PER пассивно
     const intLv = data.stats.INT.level;
     const chaLv = data.stats.CHA.level;
     const bonusPer = Math.floor(data.day / 10) * 0.5;
     const newPer = Math.floor(10 + Math.floor(intLv / 10) + Math.floor(chaLv / 15) + bonusPer);
     if (newPer > data.stats.PER.level) data.stats.PER.level = newPer;
 
-    // Сброс ментальных и социальных чекбоксов, физические НЕ сбрасываются
     data.quests.ment = [false,false,false,false,false];
     data.quests.soc = [false,false,false,false,false];
     data.day += 1;
 
     const newUnlocks = checkAchievements(data);
     if (newUnlocks.length > 0) { soundAchievement(); data.justUnlocked = newUnlocks; } else { data.justUnlocked = []; }
-
     return data;
   }
 
@@ -517,7 +630,7 @@
     document.getElementById('titleDisplay').textContent = data.selectedTitle || 'Охотник E-ранга';
     updatePhoto(data.photo);
 
-    // Поля тренировок
+    // Поля в настройках
     const weightInput = document.getElementById('weight');
     const heightInput = document.getElementById('height');
     const goalSelect = document.getElementById('goal');
@@ -532,8 +645,6 @@
     renderPhysQuests(data);
     renderQuest('ment', data.quests.ment, getStandardQuestList('ment', rank));
     renderQuest('soc', data.quests.soc, getStandardQuestList('soc', rank));
-
-    // Персональные задания
     renderPersonalTasks(data.personalTasks || []);
 
     const allPhys = data.customPhysItems.length > 0 ? data.quests.phys.every(v=>v) : false;
@@ -665,13 +776,12 @@
     });
   }
 
-  // ── Физические квесты (только из customPhysItems) ──
+  // ── Физические квесты (из customPhysItems) ──
   function renderPhysQuests(data) {
     const container = document.getElementById('physQuestList');
     container.innerHTML = '';
     const items = data.customPhysItems || [];
     const checks = data.quests.phys || [];
-    // Если длина чекбоксов не совпадает – исправляем
     while (checks.length < items.length) checks.push(false);
     while (checks.length > items.length) checks.pop();
     data.quests.phys = checks;
@@ -681,7 +791,7 @@
       p.style.color = '#4a5a6a';
       p.style.fontSize = '14px';
       p.style.padding = '8px 0';
-      p.textContent = 'Нет физических заданий. Сгенерируйте план тренировок.';
+      p.textContent = 'Нет физических заданий. Сгенерируйте план тренировок в настройках.';
       container.appendChild(p);
       return;
     }
@@ -771,7 +881,7 @@
         ['Медитация 5 мин', 'Медитация 10 мин', 'Медитация 15 мин', 'Медитация 20 мин', 'Скорочтение 15 мин']
       ];
       return ment.map(arr => arr[idx] || arr[0]);
-    } else { // social
+    } else {
       const soc = [
         ['Слушание 5 мин', 'Слушание 10 мин', 'Слушание 15 мин + анализ', 'Слушание 20 мин + разбор', 'Слушание 30 мин + резюме'],
         ['Речь 2 мин', 'Речь 3 мин (запись)', 'Речь 5 мин (камера)', 'Речь 7 мин + аргум.', 'Речь 10 мин + импров.'],
@@ -805,7 +915,6 @@
       div.appendChild(delBtn);
       container.appendChild(div);
     });
-
     container.querySelectorAll('input[type="checkbox"]').forEach(inp => {
       inp.addEventListener('change', function() {
         const idx = parseInt(this.dataset.index);
@@ -882,20 +991,174 @@
   }
 
   // ── Достижения ──
-  function getAchievementsList() { /* ... полный список ... */ }
-  function renderAchievements(data) { /* ... */ }
-  function checkAchievements(data) { /* ... */ }
-
-  // (здесь должны быть полные функции getAchievementsList, renderAchievements, checkAchievements, но для краткости я их пропустил, они есть в предыдущих версиях)
-
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  //  ГЕНЕРАЦИЯ ПЛАНА ТРЕНИРОВОК
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  function calculateBMI(weight, heightCm) {
-    const heightM = heightCm / 100;
-    return weight / (heightM * heightM);
+  function getAchievementsList() {
+    return [
+      { name: 'Первый шаг', bonus: '+5 EXP ко всем', condition: 'Выполнить любой квест 1 раз' },
+      { name: 'Новичок', bonus: '+10 EXP к STR', condition: 'Выполнить 7 физических квестов' },
+      { name: 'Стальные сухожилия', bonus: '+15 EXP к VIT', condition: 'STR ≥ 25' },
+      { name: 'Быстрее ветра', bonus: '+15 EXP к AGI', condition: 'AGI ≥ 25' },
+      { name: 'Железное сердце', bonus: '+20 EXP к VIT', condition: 'VIT ≥ 30' },
+      { name: 'Тридцатник', bonus: '+1 очко стат', condition: 'STR, AGI, VIT ≥ 30' },
+      { name: '50 отжиманий за раз', bonus: '+20 EXP к STR', condition: 'Выполнить 50 отжиманий' },
+      { name: 'Бегун', bonus: '+20 EXP к VIT', condition: 'Пробежать 5 км без остановки' },
+      { name: 'Машина', bonus: '+30 EXP ко всем', condition: 'Выполнять квесты 30 дней подряд' },
+      { name: 'Элитный охотник', bonus: '+3 очка стат', condition: 'STR, AGI, VIT ≥ 50' },
+      { name: 'Книжный червь', bonus: '+15 EXP к INT', condition: 'Прочитать 5 книг (нон-фикшн)' },
+      { name: 'Логик', bonus: '+15 EXP к INT', condition: 'Решить 100 логических задач' },
+      { name: 'Полиглот', bonus: '+20 EXP к INT', condition: 'Выучить 200 новых слов' },
+      { name: 'Медитация', bonus: '+10 EXP к PER', condition: '50 сессий медитации' },
+      { name: 'Интеллектуал', bonus: '+20 EXP к INT', condition: 'INT ≥ 30' },
+      { name: 'Мыслитель', bonus: '+30 EXP к INT + 1 очко', condition: 'INT ≥ 50' },
+      { name: 'Критик', bonus: '+20 EXP к INT', condition: 'Написать 10 эссе/конспектов' },
+      { name: 'Скорость мысли', bonus: '+15 EXP к PER', condition: '30 задач на время' },
+      { name: 'Контакт', bonus: '+10 EXP к CHA', condition: 'Сделать 10 комплиментов' },
+      { name: 'Оратор', bonus: '+15 EXP к CHA', condition: 'Выступить с речью 10 раз' },
+      { name: 'Эмпат', bonus: '+15 EXP к CHA', condition: 'Вести дневник эмоций 30 дней' },
+      { name: 'Харизматик', bonus: '+20 EXP к CHA', condition: 'CHA ≥ 30' },
+      { name: 'Лидер', bonus: '+30 EXP к CHA + 1 очко', condition: 'CHA ≥ 50' },
+      { name: 'Слушатель', bonus: '+15 EXP к PER', condition: '30 сессий активного слушания' },
+      { name: 'Нетворкер', bonus: '+20 EXP к CHA', condition: 'Завести 5 новых знакомств' },
+      { name: 'Серебряный охотник', bonus: '+2 очка стат', condition: 'Все статы ≥ 30' },
+      { name: 'Золотой охотник', bonus: '+3 очка стат', condition: 'Все статы ≥ 40' },
+      { name: 'Платиновый охотник', bonus: '+5 очков стат', condition: 'Все статы ≥ 50' },
+      { name: 'Легенда', bonus: '+50 EXP ко всем', condition: 'Выполнить 365 квестов (год)' },
+      { name: 'Пробуждение', bonus: '+1 очко + титул', condition: 'Любая стата ≥ 70' }
+    ];
   }
 
+  function renderAchievements(data) {
+    const list = getAchievementsList();
+    const unlocked = data.unlockedAchievements || [];
+    const container = document.getElementById('achievementList');
+    container.innerHTML = '';
+    list.forEach((ach, idx) => {
+      const isUnlocked = unlocked.includes(idx);
+      const div = document.createElement('div');
+      div.className = 'achievement' + (isUnlocked ? '' : ' locked');
+      div.innerHTML = `
+        <span class="ach-name">${isUnlocked ? '✅' : '🔒'} ${ach.name}</span>
+        <span class="ach-bonus">${ach.bonus}</span>
+        <div class="ach-tooltip">
+          <strong>${ach.name}</strong>
+          <div style="margin-top:4px;color:#6a8aaa;font-size:12px;">📋 ${ach.condition}</div>
+          <div style="margin-top:2px;color:#7a9ec8;font-size:11px;">🎁 ${ach.bonus}</div>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function checkAchievements(data) {
+    const unlocked = data.unlockedAchievements || [];
+    const s = data.stats;
+    const newUnlocks = [];
+    const allMain = s.STR.level >= 30 && s.AGI.level >= 30 && s.VIT.level >= 30 && s.INT.level >= 30 && s.CHA.level >= 30;
+    const checks = [
+      { idx: 0, cond: data.day > 1 },
+      { idx: 1, cond: data.day >= 7 },
+      { idx: 2, cond: s.STR.level >= 25 },
+      { idx: 3, cond: s.AGI.level >= 25 },
+      { idx: 4, cond: s.VIT.level >= 30 },
+      { idx: 5, cond: s.STR.level >= 30 && s.AGI.level >= 30 && s.VIT.level >= 30 },
+      { idx: 6, cond: false },
+      { idx: 7, cond: false },
+      { idx: 8, cond: data.day >= 30 },
+      { idx: 9, cond: s.STR.level >= 50 && s.AGI.level >= 50 && s.VIT.level >= 50 },
+      { idx: 10, cond: false },
+      { idx: 11, cond: false },
+      { idx: 12, cond: false },
+      { idx: 13, cond: false },
+      { idx: 14, cond: s.INT.level >= 30 },
+      { idx: 15, cond: s.INT.level >= 50 },
+      { idx: 16, cond: false },
+      { idx: 17, cond: false },
+      { idx: 18, cond: false },
+      { idx: 19, cond: false },
+      { idx: 20, cond: false },
+      { idx: 21, cond: s.CHA.level >= 30 },
+      { idx: 22, cond: s.CHA.level >= 50 },
+      { idx: 23, cond: false },
+      { idx: 24, cond: false },
+      { idx: 25, cond: allMain },
+      { idx: 26, cond: s.STR.level >= 40 && s.AGI.level >= 40 && s.VIT.level >= 40 && s.INT.level >= 40 && s.CHA.level >= 40 },
+      { idx: 27, cond: s.STR.level >= 50 && s.AGI.level >= 50 && s.VIT.level >= 50 && s.INT.level >= 50 && s.CHA.level >= 50 },
+      { idx: 28, cond: data.day >= 365 },
+      { idx: 29, cond: s.STR.level >= 70 || s.AGI.level >= 70 || s.VIT.level >= 70 || s.INT.level >= 70 || s.CHA.level >= 70 }
+    ];
+    checks.forEach(c => {
+      if (c.cond && !unlocked.includes(c.idx)) {
+        unlocked.push(c.idx);
+        newUnlocks.push(c.idx);
+      }
+    });
+    data.unlockedAchievements = [...new Set(unlocked)];
+    return newUnlocks;
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  ЕЖЕДНЕВНЫЕ СООБЩЕНИЯ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  const dailyMessages = {
+    1: { title: '⚔️ ДОБРО ПОЖАЛОВАТЬ', text: 'Охотник, ты пробудился.<br>Твой путь начинается сегодня.' },
+    2: { title: '', text: '«Если я сдамся из-за того, что испугался, то не смогу стать сильнее.»' },
+    3: { title: '', text: '«Если боль не убьет меня, она лишь сделает меня сильнее.»' },
+    4: { title: '', text: '«Когда ты смотришь в бездну, бездна смотрит на тебя.»' },
+    5: { title: '', text: '«Приходит осень, приходит зима, а следом весна. Во всем есть начало и конец, и за концом всегда следует новое начало.»' },
+    6: { title: '', text: '«Система хочет, чтобы я жил.»' },
+    7: { title: '', text: '«Система использует меня, а я использую систему.»' }
+  };
+
+  function showDailyMessage(day) {
+    if (day >= 1 && day <= 7) {
+      const key = 'dailyMsg_' + day;
+      if (!sessionStorage.getItem(key)) {
+        const msg = dailyMessages[day];
+        if (msg) {
+          document.getElementById('welcomeTitle').textContent = msg.title;
+          document.getElementById('welcomeMessage').innerHTML = msg.text;
+          document.getElementById('welcomeDays').textContent = day;
+          document.getElementById('welcomeOverlay').classList.remove('hidden');
+          sessionStorage.setItem(key, 'shown');
+        }
+      }
+    }
+  }
+
+  function hideWelcome() {
+    document.getElementById('welcomeOverlay').classList.add('hidden');
+    // После закрытия приветствия показываем сообщение о настройке (если ещё не показано)
+    const data = loadData();
+    if (!data.setupShown) {
+      setTimeout(() => {
+        document.getElementById('setupMsgOverlay').classList.add('active');
+      }, 400);
+    }
+  }
+
+  // ── Закрытие сообщения о настройке ──
+  function hideSetupMsg() {
+    document.getElementById('setupMsgOverlay').classList.remove('active');
+    const data = loadData();
+    data.setupShown = true;
+    saveData(data);
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  МОДАЛЬНОЕ ОКНО НАСТРОЕК
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function openSettings() {
+    document.getElementById('settingsOverlay').classList.add('active');
+    soundClick();
+  }
+
+  function closeSettings() {
+    document.getElementById('settingsOverlay').classList.remove('active');
+    soundClick();
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  ГЕНЕРАЦИЯ ПЛАНА (из модального окна)
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   function generatePlan() {
     const weight = parseFloat(document.getElementById('weight').value);
     const height = parseFloat(document.getElementById('height').value);
@@ -915,26 +1178,27 @@
     data.height = height.toString();
     data.goal = goal;
     data.fitnessLevel = level;
-    // Генерация упражнений
+
+    // Генерация упражнений (упрощённый пример)
     let exercises = [];
-    // ... (логика как в предыдущих версиях)
-    // Для примера – простой план
     if (goal === 'похудение') {
-      exercises = ['Ходьба 30 мин', 'Приседания 3×15', 'Отжимания 3×10', 'Планка 3×30 сек'];
+      exercises = ['Ходьба 30 мин', 'Приседания 3×15', 'Отжимания 3×10', 'Планка 3×30 сек', 'Растяжка'];
     } else if (goal === 'набор массы') {
-      exercises = ['Жим лёжа 4×10', 'Приседания 4×12', 'Становая тяга 4×8'];
+      exercises = ['Жим лёжа 4×10', 'Приседания 4×12', 'Становая тяга 4×8', 'Тяга штанги 4×10'];
+    } else if (goal === 'выносливость') {
+      exercises = ['Бег 5 км', 'Круговая тренировка', 'Плавание 45 мин', 'Скакалка 10 мин'];
     } else {
-      exercises = ['Бег 5 км', 'Круговая тренировка', 'Плавание 45 мин'];
+      exercises = ['Кардио 20 мин', 'Круг на всё тело', 'Упражнения на гибкость'];
     }
 
-    // Заменяем физические задания
     data.customPhysItems = exercises;
     data.quests.phys = exercises.map(() => false);
     saveData(data);
     renderAll(data);
 
-    // Показываем результат
-    document.getElementById('resultBlock').classList.add('active');
+    // Показываем результат в модальном окне
+    const resultBlock = document.getElementById('resultBlock');
+    resultBlock.classList.add('active');
     document.getElementById('planType').textContent = 'Ваш план';
     document.getElementById('frequency').textContent = `Упражнений: ${exercises.length}`;
     document.getElementById('description').textContent = 'Сгенерированный план добавлен в физические задания.';
@@ -949,7 +1213,6 @@
     soundClick();
   }
 
-  // ── Сброс плана ──
   function resetPlan() {
     if (confirm('Сбросить план тренировок? Физические задания станут пустыми.')) {
       const data = loadData();
@@ -963,17 +1226,163 @@
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  ВКЛАДКИ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function setupTabs() {
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = {
+      stats: document.getElementById('tab-stats'),
+      quests: document.getElementById('tab-quests'),
+      titles: document.getElementById('tab-titles'),
+      achievements: document.getElementById('tab-achievements')
+    };
+    tabs.forEach(btn => {
+      btn.addEventListener('click', function() {
+        tabs.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const tabId = this.dataset.tab;
+        Object.keys(contents).forEach(key => {
+          contents[key].classList.toggle('active', key === tabId);
+        });
+        if (tabId === 'stats') {
+          const data = loadData();
+          renderRadar(data);
+        }
+        soundClick();
+      });
+    });
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  ПОЛНЫЙ СБРОС
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function resetFull() {
+    if (confirm('Сбросить весь прогресс (характеристики, дни, ачивки)?')) {
+      soundClick();
+      localStorage.removeItem('hunterSystemData');
+      for (let i = 1; i <= 7; i++) sessionStorage.removeItem('dailyMsg_' + i);
+      location.reload();
+    }
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  ФОТО – ЗАГРУЗКА
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function setupPhotoUpload() {
+    const container = document.getElementById('photoContainer');
+    const input = document.getElementById('photoInput');
+    container.addEventListener('click', function(e) {
+      if (e.target.tagName !== 'IMG') input.click();
+    });
+    input.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        compressImage(ev.target.result, function(compressed) {
+          const data = loadData();
+          data.photo = compressed;
+          saveData(data);
+          updatePhoto(compressed);
+          soundClick();
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function compressImage(base64, callback) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      const maxSize = 400;
+      if (w > maxSize || h > maxSize) {
+        const ratio = Math.min(maxSize / w, maxSize / h);
+        w = Math.round(w * ratio);
+        h = Math.round(h * ratio);
+      }
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      callback(canvas.toDataURL('image/jpeg', 0.7));
+    };
+    img.src = base64;
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  ИМЯ/ВОЗРАСТ – СОХРАНЕНИЕ
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function setupProfileEditing() {
+    const nameInput = document.getElementById('userNameInput');
+    const ageInput = document.getElementById('userAgeInput');
+    nameInput.addEventListener('change', function() {
+      const data = loadData();
+      data.name = this.value.trim();
+      saveData(data);
+      soundClick();
+    });
+    ageInput.addEventListener('change', function() {
+      const data = loadData();
+      data.age = this.value.trim();
+      saveData(data);
+      soundClick();
+    });
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  АВТОСОХРАНЕНИЕ ДЛЯ ПОЛЕЙ НАСТРОЕК
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function setupSettingsAutoSave() {
+    const weightInput = document.getElementById('weight');
+    const heightInput = document.getElementById('height');
+    const goalSelect = document.getElementById('goal');
+    const levelSelect = document.getElementById('level');
+    function saveSettings() {
+      const data = loadData();
+      data.weight = weightInput.value.trim();
+      data.height = heightInput.value.trim();
+      data.goal = goalSelect.value;
+      data.fitnessLevel = levelSelect.value;
+      saveData(data);
+    }
+    weightInput.addEventListener('change', saveSettings);
+    heightInput.addEventListener('change', saveSettings);
+    goalSelect.addEventListener('change', saveSettings);
+    levelSelect.addEventListener('change', saveSettings);
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   //  СТАРТ
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   let appData = checkNewDay();
   renderAll(appData);
-  // ... настройка обработчиков кнопок и т.д.
+  setupTabs();
+  setupPhotoUpload();
+  setupProfileEditing();
+  setupSettingsAutoSave();
 
+  // Обработчики для кнопок
+  document.getElementById('welcomeAccept').addEventListener('click', hideWelcome);
+  document.getElementById('setupMsgAccept').addEventListener('click', hideSetupMsg);
+  document.getElementById('btnSettings').addEventListener('click', openSettings);
+  document.getElementById('settingsCloseBtn').addEventListener('click', closeSettings);
+  document.getElementById('btnGeneratePlan').addEventListener('click', generatePlan);
   document.getElementById('btnResetPlan').addEventListener('click', resetPlan);
   document.getElementById('addPersonalTaskBtn').addEventListener('click', addPersonalTask);
-  // ... остальные обработчики
+  document.getElementById('btnResetFull').addEventListener('click', resetFull);
+  document.querySelector('.header .title').addEventListener('dblclick', resetFull);
 
-  window.addEventListener('beforeunload', () => { const data = loadData(); saveData(data); });
+  // Закрытие модального окна по клику на оверлей
+  document.getElementById('settingsOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeSettings();
+  });
+
+  window.addEventListener('beforeunload', () => {
+    const data = loadData();
+    saveData(data);
+  });
 </script>
 </body>
 </html>
